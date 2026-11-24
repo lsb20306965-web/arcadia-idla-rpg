@@ -2612,6 +2612,8 @@ function showStageClear(st) {
   el.classList.remove('on');
   void el.offsetWidth;
   el.classList.add('on');
+  clearTimeout(el._t);
+  el._t = setTimeout(() => el.classList.remove('on'), 1800);
 }
 
 function boot() {
