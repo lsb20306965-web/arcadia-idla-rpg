@@ -1180,7 +1180,7 @@ function makeEnemy(opt) {
     scale: (opt.scale || 1) * (0.86 + 0.18 * depth),
     depth,
     rank: opt.rank === undefined ? Math.floor(Math.random() * 4) : opt.rank,
-    jit: rnd(-8, 12),
+    jit: rnd(-14, 16),
     x: opt.x || (W * rnd(0.95, 1.06) + 10),
     y: 0,
     spd: (opt.spd || MOB_SPD[spr] || 70) * rnd(0.9, 1.12) * (boss ? 0.72 : 1) * BAL.spd,
@@ -1199,7 +1199,7 @@ function makeEnemy(opt) {
   return e;
 }
 function setStop(e) {
-  e.stopX = WALL.x + 22 + e.rank * 104 + e.depth * 30 + e.jit;
+  e.stopX = WALL.x + 18 + e.rank * 52 + e.depth * 26 + e.jit;
 }
 
 function spawnOne(desc) {
@@ -1920,7 +1920,7 @@ function updateEnemies(dt) {
       if (e.dying <= 0) list.splice(i, 1);
       continue;
     }
-    e.stopX = WALL.x + 22 + e.rank * 104 + e.depth * 30 + e.jit;
+    e.stopX = WALL.x + 18 + e.rank * 52 + e.depth * 26 + e.jit;
     if (e.kb > 0) {
       e.kbT += dt;
       e.x += e.kb * dt;
@@ -2364,7 +2364,7 @@ function drawEnemies() {
     if (e.spawnIn > 0) alpha = clamp(1 - e.spawnIn / 0.34, 0, 1);
 
     const bob = Math.sin(t * 1.9 + e.wob) * 2.0;
-    const rankY = (e.rank || 0) * 13;
+    const rankY = (e.rank || 0) * 14;
     const yb = e.y + bob - hop - rankY;
     const x = e.x + dx;
 
