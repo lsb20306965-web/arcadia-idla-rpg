@@ -1181,7 +1181,7 @@ function makeEnemy(opt) {
     depth,
     rank: opt.rank === undefined ? Math.floor(Math.random() * 4) : opt.rank,
     jit: rnd(-8, 12),
-    x: opt.x || (W * rnd(0.94, 1.10) + 20),
+    x: opt.x || (W * rnd(0.95, 1.06) + 10),
     y: 0,
     spd: (opt.spd || MOB_SPD[spr] || 70) * rnd(0.9, 1.12) * (boss ? 0.72 : 1) * BAL.spd,
     stopX: 0, state: opt.state || 'walk',
@@ -1238,7 +1238,7 @@ function beginWave(i) {
   const w = B.wave, plan = w.plan[i];
   if (!plan) return;
   w.idx = i; w.state = 'spawn'; w.spawned = 0; w.killed = 0;
-  const iv = clamp(0.30 - state.stage * 0.004, 0.14, 0.30);
+  const iv = clamp(0.15 - state.stage * 0.002, 0.06, 0.15);
   const q = [];
   if (plan.boss) {
     q.push({ t: 0.1, boss: true });
