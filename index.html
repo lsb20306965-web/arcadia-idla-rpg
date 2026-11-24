@@ -1319,6 +1319,7 @@ function updateBattle(dt) {
     if (B.spawnT <= 0) {
       if (B.mode === 'stage') spawnStageEnemy();
       else if (B.dgn && B.dgn.type !== 'promote') spawnDgnEnemy();
+      B.spawnT = 0;
     }
   }
 
@@ -1331,7 +1332,8 @@ function updateBattle(dt) {
       e.dying -= dt;
       if (e.dying <= 0) {
         B.enemy = null;
-        if (B.mode === 'stage' && !B.spawnT) B.spawnT = 0.55;
+        if (B.mode === 'stage' && B.spawnT <= 0) B.spawnT = 0.55;
+        else if (B.dgn && B.dgn.type !== 'promote' && B.spawnT <= 0) B.spawnT = 0.2;
       }
     } else if (e.hp > 0) {
       e.anim = Math.max(0, e.anim - dt * 2.2);
