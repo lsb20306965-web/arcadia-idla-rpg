@@ -887,14 +887,16 @@ const stageName = st => {
 const enemyHp = st => 92 * Math.pow(1.175, st - 1);
 const enemyAtk = st => 5.0 * Math.pow(1.135, st - 1);
 const goldPerKill = st => 3.1 * Math.pow(1.155, st - 1);
+/* 밸런스 다이얼 (튜닝용) */
+const BAL = { hp: 1.55, dmg: 1.30, count: 1.0, spd: 1.0 };
 const KILLS_PER_STAGE = 7;
 const isBossStage = st => st % 10 === 0;
 /* 웨이브 편성: 3웨이브, 보스 스테이지는 마지막 웨이브에 보스+호위 */
 const WAVES_PER_STAGE = 3;
 function wavePlan(st) {
-  const base = 8 + Math.min(9, Math.floor((st - 1) * 0.55));
-  const b2 = base + 2 + Math.floor(st / 12);
-  const b3 = base + 4 + Math.floor(st / 8);
+  const base = Math.round((8 + Math.min(9, Math.floor((st - 1) * 0.55))) * BAL.count);
+  const b2 = Math.round((base + 2 + Math.floor(st / 12)) * BAL.count);
+  const b3 = Math.round((base + 4 + Math.floor(st / 8)) * BAL.count);
   if (isBossStage(st)) {
     return [
       { count: base, boss: false },
@@ -1168,7 +1170,7 @@ function makeEnemy(opt) {
   const st = state.stage;
   const boss = !!opt.boss;
   const spr = opt.spr || (boss ? bossSprite(st) : mobTier(st));
-  const hp = opt.hp || (boss ? enemyHp(st) * 9.5 : enemyHp(st));
+  const hp = (opt.hp || (boss ? enemyHp(st) * 9.5 : enemyHp(st))) * BAL.hp;
   const depth = opt.depth === undefined ? Math.random() : opt.depth;
   const e = {
     uid: ++B.uid, spr, boss,
@@ -1181,7 +1183,7 @@ function makeEnemy(opt) {
     jit: rnd(-8, 12),
     x: opt.x || (W * rnd(0.94, 1.10) + 20),
     y: 0,
-    spd: (opt.spd || MOB_SPD[spr] || 70) * rnd(0.9, 1.12) * (boss ? 0.72 : 1),
+    spd: (opt.spd || MOB_SPD[spr] || 70) * rnd(0.9, 1.12) * (boss ? 0.72 : 1) * BAL.spd,
     stopX: 0, state: opt.state || 'walk',
     t: rnd(0, 6.28), hop: rnd(0, 6.28), wob: rnd(0, 6.28),
     hurt: 0, kb: 0, kbT: 0, anim: 0, dying: 0, spawnIn: 0.34,
@@ -1401,7 +1403,7 @@ function enemyHitWall(e) {
   at(0.14, () => {
     if (e.dying > 0) return;
     const def = Math.min(70, wallDefPct());
-    let dmg = e.atk * rnd(0.9, 1.15) * (e.boss ? 1.7 : 1) * (1 - def / 100);
+    let dmg = e.atk * rnd(0.9, 1.15) * (e.boss ? 1.7 : 1) * (1 - def / 100) * BAL.dmg;
     dmg = Math.max(1, Math.round(dmg));
     if (B.mode === 'dungeon') dmg = Math.round(dmg * 0.55);
     const floor = B.mode === 'dungeon' ? 1 : 0;
@@ -2028,10 +2030,10 @@ function drawWall() {
 
   // ---- 성벽 본체 ----
   const g = ctx.createLinearGradient(0, WALL.backTop, 0, bot);
-  g.addColorStop(0, '#6b7994');
-  g.addColorStop(0.22, '#4f5c76');
-  g.addColorStop(0.62, '#333d52');
-  g.addColorStop(1, '#171d28');
+  g.addColorStop(0, '#4a5670');
+  g.addColorStop(0.22, '#39435a');
+  g.addColorStop(0.62, '#232b3a');
+  g.addColorStop(1, '#10151d');
   ctx.fillStyle = g;
   ctx.fillRect(-12, WALL.backTop, x1 + 12, bot - WALL.backTop);
 
@@ -2118,24 +2120,49 @@ function drawWall() {
 
   // ---- 성문 ----
   const gw = Math.min(x1 * 0.46, 86), gh = WALL.h * 0.44;
-  const gx = x1 * 0.24, gy = bot - gh;
+  const gx = x1 * 0.22, gy = bot - gh;
+  const archTop = gy + gh * 0.30;
   ctx.save();
-  ctx.fillStyle = 'rgba(8,11,18,.92)';
+  // 내부 빛
+  const ig = ctx.createRadialGradient(gx + gw * 0.5, gy + gh * 0.62, 2, gx + gw * 0.5, gy + gh * 0.62, gw * 0.9);
+  ig.addColorStop(0, 'rgba(255,190,110,.34)');
+  ig.addColorStop(0.6, 'rgba(180,110,40,.14)');
+  ig.addColorStop(1, 'rgba(0,0,0,0)');
+  ctx.fillStyle = ig;
   ctx.beginPath();
-  ctx.moveTo(gx, gy);
-  ctx.lineTo(gx, gy + gh * 0.35);
-  ctx.quadraticCurveTo(gx + gw / 2, gy - gh * 0.16, gx + gw, gy + gh * 0.35);
+  ctx.moveTo(gx, gy + gh);
+  ctx.lineTo(gx, archTop);
+  ctx.quadraticCurveTo(gx + gw * 0.5, gy - gh * 0.06, gx + gw, archTop);
   ctx.lineTo(gx + gw, gy + gh);
   ctx.closePath();
   ctx.fill();
-  ctx.strokeStyle = 'rgba(90,70,44,.85)';
-  ctx.lineWidth = 2;
+  // 문틀 돌
+  ctx.strokeStyle = 'rgba(146,164,196,.55)';
+  ctx.lineWidth = 3.5;
+  ctx.stroke();
+  // 나무 문
+  ctx.fillStyle = 'rgba(58,42,26,.88)';
+  ctx.beginPath();
+  ctx.moveTo(gx + 6, gy + gh);
+  ctx.lineTo(gx + 6, archTop + 4);
+  ctx.quadraticCurveTo(gx + gw * 0.5, gy + gh * 0.10, gx + gw - 6, archTop + 4);
+  ctx.lineTo(gx + gw - 6, gy + gh);
+  ctx.closePath();
+  ctx.fill();
+  ctx.strokeStyle = 'rgba(30,20,12,.9)';
+  ctx.lineWidth = 1.4;
   for (let i = 1; i < 4; i++) {
     ctx.beginPath();
-    ctx.moveTo(gx + (gw / 4) * i, gy + gh * 0.24);
+    ctx.moveTo(gx + (gw / 4) * i, archTop - 2 + (i === 2 ? -6 : 0));
     ctx.lineTo(gx + (gw / 4) * i, gy + gh);
     ctx.stroke();
   }
+  ctx.strokeStyle = 'rgba(190,160,110,.35)';
+  ctx.lineWidth = 2;
+  ctx.beginPath();
+  ctx.moveTo(gx + 8, gy + gh * 0.72);
+  ctx.lineTo(gx + gw - 8, gy + gh * 0.72);
+  ctx.stroke();
   ctx.restore();
 
   // ---- 횃불 ----
@@ -2341,10 +2368,11 @@ function drawEnemies() {
       tint: e.tint, gray: e.dying > 0
     });
 
-    if (e.hp > 0 && e.dying <= 0) {
-      const bw = clamp(h * (e.boss ? 0.8 : 0.52), 18, 96), bh = e.boss ? 5 : 3;
-      const bx = x - bw / 2, by = yb - h - (e.boss ? 13 : 8);
-      ctx.fillStyle = 'rgba(0,0,0,.55)';
+    if (e.hp > 0 && e.dying <= 0 && (e.hp < e.maxHp - 0.5 || e.boss)) {
+      const bw = clamp(h * (e.boss ? 0.62 : 0.34), 16, 84), bh = e.boss ? 4 : 2.4;
+      const bx = x - bw / 2, by = yb - h - (e.boss ? 12 : 6);
+      ctx.globalAlpha = 0.82;
+      ctx.fillStyle = 'rgba(0,0,0,.6)';
       ctx.fillRect(bx - 1, by - 1, bw + 2, bh + 2);
       ctx.fillStyle = '#3a1520';
       ctx.fillRect(bx, by, bw, bh);
@@ -2354,6 +2382,7 @@ function drawEnemies() {
       else { g2.addColorStop(0, '#ff8a5c'); g2.addColorStop(1, '#e0203c'); }
       ctx.fillStyle = g2;
       ctx.fillRect(bx, by, bw * rr, bh);
+      ctx.globalAlpha = 1;
     }
   });
 }
@@ -3481,7 +3510,7 @@ function boot() {
   if (document.fonts && document.fonts.ready) document.fonts.ready.then(() => { });
 }
 
-window.__ARC2 = { state: () => state, B, party, WALL, stats: heroStats, addNum, startStage, castUltimate, shieldBash };
+window.__ARC2 = { state: () => state, B, party, WALL, BAL, stats: heroStats, addNum, startStage, castUltimate, shieldBash };
 
 if (document.readyState === 'loading') document.addEventListener('DOMContentLoaded', boot);
 else boot();
