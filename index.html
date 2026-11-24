@@ -616,6 +616,14 @@ function fmt(n) {
   return String(n);
 }
 const fmtFull = n => Math.floor(n || 0).toLocaleString('ko-KR');
+// Korean particle helper: josa('기사','이','가') -> '기사가'
+function josa(word, withJong, withoutJong) {
+  const w = String(word || '');
+  if (!w) return w;
+  const code = w.charCodeAt(w.length - 1);
+  if (code < 0xac00 || code > 0xd7a3) return w + withoutJong;
+  return w + ((code - 0xac00) % 28 > 0 ? withJong : withoutJong);
+}
 
 /* ---------- static data ---------- */
 const SAVE_KEY = 'arcadia_idle_v2';
@@ -1275,7 +1283,7 @@ function endDungeon(success) {
     if (state.rank < RANKS.length - 1) {
       state.rank++;
       Audio2.play('legend');
-      toast('🏅 승급 성공! ' + RANKS[state.rank] + '이 되었습니다');
+      toast('🏅 승급 성공! ' + josa(RANKS[state.rank], '이', '가') + ' 되었습니다');
     } else {
       toast('이미 최고 계급입니다');
     }
