@@ -483,7 +483,7 @@ body{
   .mission .mtext{font-size:10px}
   .mission .mbtn{padding:6px 9px;font-size:9.5px}
   .mission .mrew{font-size:8.5px}
-  .party{bottom:calc(58px + env(safe-area-inset-bottom));gap:4px;left:6px}
+  .party{display:none}
   .pcard{width:39px;padding:2px}
   .pcard .pav{width:19px;height:19px}
   .pcard .pnm{font-size:7px}
@@ -941,12 +941,12 @@ function resize() {
   cv.width = Math.round(W * DPR);
   cv.height = Math.round(H * DPR);
   ctx.setTransform(DPR, 0, 0, DPR, 0, 0);
-  groundY = H * 0.855;
-  heroH = clamp(H * 0.175, 60, 168);
+  groundY = H * (H < 470 ? 0.79 : 0.855);
+  heroH = clamp(Math.min(H * 0.175, W * 0.15), 54, 170);
   layoutParty();
 }
 function heroX(i) {
-  const step = Math.min(W * 0.088, 126);
+  const step = Math.min(W * 0.088, heroH * 0.78);
   return W * 0.175 + step * i;
 }
 function layoutParty() {
