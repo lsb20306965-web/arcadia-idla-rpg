@@ -949,7 +949,7 @@ function heroX(i) {
   return W * 0.215 - span * 0.5 + span * (i / 3) * 0.92;
 }
 function layoutParty() {
-  party.forEach((p, i) => { p.x = heroX(i); p.baseY = groundY; });
+  party.forEach((p, i) => { p.x = heroX(i); p.y = groundY; p.baseY = groundY; });
 }
 function enemyBaseX() { return W * (W < 620 ? 0.735 : 0.735); }
 
@@ -1126,7 +1126,7 @@ function fireProjectile(type, p, dmg, opt) {
   opt = opt || {};
   const e = B.enemy;
   if (!e || e.dying) return;
-  const sx = p.x + heroH * 0.18, sy = p.y - heroH * 0.52;
+  const sx = p.x + heroH * 0.18, sy = (p.y || groundY) - heroH * 0.52;
   const tx = e.x, ty = e.y - spriteH(e) * 0.5;
   const spd = type === 'arrow' ? 1500 : type === 'holy' ? 900 : 620;
   B.projs.push({
