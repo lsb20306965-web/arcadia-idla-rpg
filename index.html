@@ -1496,16 +1496,15 @@ function drawBG() {
   const ch = Math.floor((state.stage - 1) / 10);
   const key = ch % 2 === 0 ? 'bg_forest' : 'bg_castle';
   const img = IMG[key];
-  const scroll = (B.t * 9) % W;
   if (img) {
-    const scale = Math.max(W / img.width, (H * 1.08) / img.height);
+    // cover the canvas, panning slowly inside the overflow so edges never repeat
+    const scale = Math.max(W / img.width, (H * 1.06) / img.height);
     const dw = img.width * scale, dh = img.height * scale;
-    const yy = H - dh + (H - dh < 0 ? (H - dh) * -0.15 : 0);
+    const over = Math.max(0, dw - W);
+    const x0 = -over * 0.5 + Math.sin(B.t * 0.07) * over * 0.36;
+    const y0 = H - dh;
     ctx.save();
-    ctx.globalAlpha = 1;
-    for (let i = -1; i <= 1; i++) {
-      ctx.drawImage(img, -scroll + i * dw, yy, dw, dh);
-    }
+    ctx.drawImage(img, x0, y0, dw, dh);
     ctx.restore();
     if (B.mode === 'dungeon') {
       ctx.save();
