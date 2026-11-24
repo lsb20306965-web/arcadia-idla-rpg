@@ -1118,7 +1118,7 @@ function buildCracks() {
     WALL.cracks.push(pts);
   }
 }
-const enemyH = e => e.isDgn ? heroH * 0.80 : heroH * (e.boss ? 1.42 : 0.80) * e.scale;
+const enemyH = e => e.isDgn ? heroH * 0.74 : heroH * (e.boss ? 1.38 : 0.74) * e.scale;
 
 /* ---------- fx helpers ---------- */
 function addNum(x, y, val, kind) {
@@ -1199,7 +1199,7 @@ function makeEnemy(opt) {
   return e;
 }
 function setStop(e) {
-  e.stopX = WALL.x + 24 + e.rank * 74 + e.depth * 26 + e.jit;
+  e.stopX = WALL.x + 22 + e.rank * 104 + e.depth * 30 + e.jit;
 }
 
 function spawnOne(desc) {
@@ -1798,7 +1798,7 @@ function updateBattle(dt) {
   if (B.bgKick > 0) B.bgKick = Math.max(0, B.bgKick - dt * 1.3);
   B.comboT -= dt;
   if (B.comboT <= 0) B.combo = 0;
-  WALL.glow = Math.max(0, WALL.glow - dt * 2.4);
+  WALL.glow = Math.max(0, WALL.glow - dt * 6.5);
   WALL.shake = Math.max(0, WALL.shake - dt * 26);
   WALL.torch += dt;
 
@@ -1920,7 +1920,7 @@ function updateEnemies(dt) {
       if (e.dying <= 0) list.splice(i, 1);
       continue;
     }
-    e.stopX = WALL.x + 24 + e.rank * 74 + e.depth * 26 + e.jit;
+    e.stopX = WALL.x + 22 + e.rank * 104 + e.depth * 30 + e.jit;
     if (e.kb > 0) {
       e.kbT += dt;
       e.x += e.kb * dt;
@@ -2213,8 +2213,8 @@ function drawWall() {
   // ---- 피격 붉은 경고 ----
   if (WALL.glow > 0.01) {
     const wg = ctx.createLinearGradient(0, WALL.top, 0, bot);
-    wg.addColorStop(0, 'rgba(255,60,70,' + (0.15 * WALL.glow) + ')');
-    wg.addColorStop(1, 'rgba(255,30,50,' + (0.05 * WALL.glow) + ')');
+    wg.addColorStop(0, 'rgba(255,60,70,' + (0.10 * WALL.glow) + ')');
+    wg.addColorStop(1, 'rgba(255,30,50,0)');
     ctx.fillStyle = wg;
     ctx.fillRect(-12, WALL.top, x1 + 12, bot - WALL.top);
     ctx.strokeStyle = 'rgba(255,120,120,' + (0.55 * WALL.glow) + ')';
@@ -2334,7 +2334,7 @@ function drawEnemies() {
     } else if (e.kb > 0) {
       const k = clamp(e.kbT / 0.55, 0, 1);
       hop = Math.sin(k * Math.PI) * h * 0.38;
-      rot = -k * 1.25;
+      rot = -k * 0.72;
       sx = 1 + 0.06 * Math.sin(k * Math.PI);
       sy = 1 - 0.05 * Math.sin(k * Math.PI);
     } else if (e.state === 'walk') {
@@ -2364,7 +2364,7 @@ function drawEnemies() {
     if (e.spawnIn > 0) alpha = clamp(1 - e.spawnIn / 0.34, 0, 1);
 
     const bob = Math.sin(t * 1.9 + e.wob) * 2.0;
-    const rankY = (e.rank || 0) * 7;
+    const rankY = (e.rank || 0) * 13;
     const yb = e.y + bob - hop - rankY;
     const x = e.x + dx;
 
