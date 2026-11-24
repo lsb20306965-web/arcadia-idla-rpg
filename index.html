@@ -941,12 +941,12 @@ function resize() {
   cv.height = Math.round(H * DPR);
   ctx.setTransform(DPR, 0, 0, DPR, 0, 0);
   groundY = H * 0.855;
-  heroH = clamp(H * 0.265, 70, 245);
+  heroH = clamp(H * 0.185, 62, 172);
   layoutParty();
 }
 function heroX(i) {
-  const span = Math.min(W * 0.30, 300);
-  return W * 0.215 - span * 0.5 + span * (i / 3) * 0.92;
+  const step = Math.min(W * 0.082, 118);
+  return W * 0.155 + step * i;
 }
 function layoutParty() {
   party.forEach((p, i) => { p.x = heroX(i); p.y = groundY; p.baseY = groundY; });
@@ -1035,8 +1035,8 @@ function hitEnemy(dmg, opt) {
 }
 function spriteH(e) {
   const base = heroH;
-  if (e.isDgn && !e.boss) return base * 0.72;
-  return base * (e.boss ? 0.98 : 0.92) * e.scale;
+  if (e.isDgn && !e.boss) return base * 0.86;
+  return base * (e.boss ? 1.02 : 1.04) * e.scale;
 }
 function killEnemy() {
   const e = B.enemy;
@@ -1518,41 +1518,9 @@ function drawBG() {
     g.addColorStop(0, '#101b33'); g.addColorStop(1, '#050810');
     ctx.fillStyle = g; ctx.fillRect(0, 0, W, H);
   }
-  // mid layer silhouettes
-  const m = (B.t * 26) % 400;
-  ctx.save();
-  if (ch % 2 === 0) {
-    ctx.fillStyle = 'rgba(6,18,26,.55)';
-    for (let i = -1; i < 4; i++) {
-      const bx = i * 400 - m + 40;
-      ctx.beginPath();
-      ctx.moveTo(bx, groundY + 6);
-      ctx.lineTo(bx + 18, groundY - H * 0.42);
-      ctx.lineTo(bx + 40, groundY + 6);
-      ctx.closePath(); ctx.fill();
-      ctx.beginPath();
-      ctx.moveTo(bx + 70, groundY + 6);
-      ctx.lineTo(bx + 96, groundY - H * 0.30);
-      ctx.lineTo(bx + 122, groundY + 6);
-      ctx.closePath(); ctx.fill();
-    }
-  } else {
-    ctx.fillStyle = 'rgba(10,4,10,.5)';
-    for (let i = -1; i < 4; i++) {
-      const bx = i * 400 - m + 20;
-      ctx.fillRect(bx, groundY - H * 0.36, 34, H * 0.36);
-      ctx.beginPath();
-      ctx.moveTo(bx - 10, groundY - H * 0.36);
-      ctx.lineTo(bx + 17, groundY - H * 0.44);
-      ctx.lineTo(bx + 44, groundY - H * 0.36);
-      ctx.closePath(); ctx.fill();
-      ctx.fillRect(bx + 180, groundY - H * 0.26, 22, H * 0.26);
-    }
-  }
-  ctx.restore();
   // ambient particles
   const amb = ch % 2 === 0 ? 'rgba(160,235,255,' : 'rgba(255,180,90,';
-  for (let i = 0; i < 18; i++) {
+  for (let i = 0; i < 26; i++) {
     const sp = 10 + (i % 5) * 6;
     const x = ((i * 137 + B.t * sp) % (W + 60)) - 30;
     const y = H * 0.18 + ((i * 91 + Math.sin(B.t * 0.7 + i) * 30) % (H * 0.62));
@@ -1565,27 +1533,73 @@ function drawBG() {
 }
 
 function drawGround() {
+  // light pool on the fighting floor
+  ctx.save();
+  const pool = ctx.createRadialGradient(W * 0.45, groundY + 10, 20, W * 0.45, groundY + 10, W * 0.46);
+  pool.addColorStop(0, 'rgba(120,190,255,.16)');
+  pool.addColorStop(0.6, 'rgba(90,150,220,.05)');
+  pool.addColorStop(1, 'rgba(0,0,0,0)');
+  ctx.fillStyle = pool;
+  ctx.beginPath();
+  ctx.ellipse(W * 0.45, groundY + 18, W * 0.46, H * 0.13, 0, 0, 6.283);
+  ctx.fill();
+  ctx.restore();
+
   const g = ctx.createLinearGradient(0, groundY - 6, 0, H);
-  g.addColorStop(0, 'rgba(8,14,26,.10)');
-  g.addColorStop(0.22, 'rgba(6,10,20,.72)');
-  g.addColorStop(1, 'rgba(2,4,9,.95)');
+  g.addColorStop(0, 'rgba(8,14,26,.08)');
+  g.addColorStop(0.18, 'rgba(6,10,20,.55)');
+  g.addColorStop(0.55, 'rgba(4,7,14,.82)');
+  g.addColorStop(1, 'rgba(2,4,9,.96)');
   ctx.fillStyle = g;
   ctx.fillRect(0, groundY - 6, W, H - groundY + 6);
-  // glow line
+
+  // glowing floor line
   const lg = ctx.createLinearGradient(0, 0, W, 0);
   lg.addColorStop(0, 'rgba(120,190,255,0)');
-  lg.addColorStop(0.4, 'rgba(150,210,255,.35)');
-  lg.addColorStop(0.7, 'rgba(255,210,140,.22)');
+  lg.addColorStop(0.25, 'rgba(150,210,255,.30)');
+  lg.addColorStop(0.6, 'rgba(255,210,140,.20)');
   lg.addColorStop(1, 'rgba(120,190,255,0)');
   ctx.fillStyle = lg;
-  ctx.fillRect(0, groundY - 1.5, W, 2.2);
-  // ground sparkle
-  for (let i = 0; i < 22; i++) {
-    const x = ((i * 97 + B.t * 18) % (W + 40)) - 20;
-    const y = groundY + 8 + (i % 6) * ((H - groundY) / 7);
-    ctx.fillStyle = 'rgba(140,190,255,' + (0.05 + (i % 4) * 0.03) + ')';
-    ctx.fillRect(x, y, 18 + (i % 3) * 10, 1.2);
+  ctx.fillRect(0, groundY - 1.5, W, 1.8);
+
+  // floor tiles / sparkles
+  for (let i = 0; i < 26; i++) {
+    const x = ((i * 89 + B.t * 12) % (W + 60)) - 30;
+    const y = groundY + 10 + (i % 7) * ((H - groundY) / 8);
+    const a = 0.035 + (i % 4) * 0.022;
+    ctx.fillStyle = 'rgba(150,200,255,' + a + ')';
+    ctx.fillRect(x, y, 22 + (i % 3) * 14, 1.1);
   }
+  // distant fog band
+  const fog = ctx.createLinearGradient(0, groundY - H * 0.05, 0, groundY + 2);
+  fog.addColorStop(0, 'rgba(120,180,255,0)');
+  fog.addColorStop(1, 'rgba(130,190,255,.10)');
+  ctx.fillStyle = fog;
+  ctx.fillRect(0, groundY - H * 0.05, W, H * 0.05 + 2);
+}
+
+function drawForeground() {
+  const sway = B.t * 0.8;
+  ctx.save();
+  ctx.strokeStyle = 'rgba(3,6,12,.92)';
+  ctx.lineCap = 'round';
+  for (let i = 0; i < 40; i++) {
+    const x = (i * 47 + 12) % (W + 40) - 20;
+    const base = H + 4;
+    const hgt = 14 + ((i * 37) % 26);
+    const lean = Math.sin(sway + i * 0.7) * 5;
+    ctx.lineWidth = 2.4;
+    ctx.beginPath();
+    ctx.moveTo(x, base);
+    ctx.quadraticCurveTo(x + lean * 0.4, base - hgt * 0.6, x + lean, base - hgt);
+    ctx.stroke();
+    ctx.lineWidth = 1.7;
+    ctx.beginPath();
+    ctx.moveTo(x + 6, base);
+    ctx.quadraticCurveTo(x + 6 + lean * 0.6, base - hgt * 0.45, x + 8 + lean * 1.3, base - hgt * 0.7);
+    ctx.stroke();
+  }
+  ctx.restore();
 }
 
 function drawShadow(x, y, w, a) {
@@ -1907,6 +1921,7 @@ function draw() {
   drawFx();
   drawParticles();
   drawHits();
+  drawForeground();
   drawStageFlash();
   ctx.restore();
 }
