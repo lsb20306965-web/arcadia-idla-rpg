@@ -920,7 +920,7 @@ function bossSprite(st) {
   return ['mob_slime', 'mob_orc', 'mob_darkknight', 'mob_dragon'][(ch - 1) % 4] || 'mob_dragon';
 }
 const MOB_NAME = { mob_slime: '슬라임', mob_orc: '오크 전사', mob_darkknight: '다크나이트', mob_dragon: '레드 드래곤' };
-const MOB_SPD = { mob_slime: 60, mob_orc: 74, mob_darkknight: 86, mob_dragon: 94 };
+const MOB_SPD = { mob_slime: 112, mob_orc: 128, mob_darkknight: 142, mob_dragon: 150 };
 const BOSS_NAME = { mob_slime: '킹 슬라임', mob_orc: '오크 대장', mob_darkknight: '다크나이트 로드', mob_dragon: '레드 드래곤' };
 
 /* ---------- missions ---------- */
@@ -1077,10 +1077,10 @@ function resize() {
   cv.height = Math.round(H * DPR);
   ctx.setTransform(DPR, 0, 0, DPR, 0, 0);
   const compact = H < 470;
-  groundY = H * (compact ? 0.80 : 0.85);
-  heroH = clamp(Math.min(H * (compact ? 0.17 : 0.16), W * 0.145), 46, 140);
-  WALL.x = clamp(W * 0.235, 64, 225);
-  WALL.h = clamp(heroH * 1.30, 70, 205);
+  groundY = H * (compact ? 0.775 : 0.80);
+  heroH = clamp(Math.min(H * (compact ? 0.20 : 0.185), W * 0.16), 44, 168);
+  WALL.x = clamp(W * 0.245, 62, 330);
+  WALL.h = clamp(heroH * 1.38, 66, 232);
   WALL.top = groundY - WALL.h;
   WALL.backTop = WALL.top - heroH * 0.34;
   buildCracks();
@@ -1088,10 +1088,10 @@ function resize() {
 }
 /* 성벽 위 대형: 앞줄(기사·궁수) / 뒷줄(마법사·성직자) */
 const FORMATION = [
-  { fx: 0.74, fy: 1.00, s: 1.00 },
-  { fx: 0.32, fy: 1.02, s: 0.97 },
-  { fx: 0.78, fy: 0.66, s: 0.90 },
-  { fx: 0.28, fy: 0.64, s: 0.90 }
+  { fx: 0.80, fy: 1.00, s: 1.00 },
+  { fx: 0.29, fy: 1.03, s: 0.96 },
+  { fx: 0.52, fy: 0.60, s: 0.88 },
+  { fx: 0.12, fy: 0.58, s: 0.88 }
 ];
 function layoutParty() {
   party.forEach((p, i) => {
@@ -1177,7 +1177,8 @@ function makeEnemy(opt) {
     atk: opt.atk || (boss ? enemyAtk(st) * 1.6 : enemyAtk(st)),
     scale: (opt.scale || 1) * (0.86 + 0.18 * depth),
     depth,
-    x: opt.x || (W + 30 + rnd(0, 200)),
+    rank: opt.rank === undefined ? Math.floor(Math.random() * 4) : opt.rank,
+    x: opt.x || (W * rnd(0.94, 1.10) + 20),
     y: 0,
     spd: (opt.spd || MOB_SPD[spr] || 70) * rnd(0.9, 1.12) * (boss ? 0.72 : 1),
     stopX: 0, state: opt.state || 'walk',
@@ -1189,9 +1190,13 @@ function makeEnemy(opt) {
     gold: opt.gold || 0, dia: opt.dia || 0, isDgn: !!opt.isDgn, tint: opt.tint || null
   };
   e.y = groundY + 6 - (1 - depth) * heroH * 0.16;
-  e.stopX = WALL.x + enemyH(e) * 0.30 + depth * 12;
+  e.stopX = e.stopXFor = 0;
+  setStop(e);
   if (e.state === 'attack') e.x = e.stopX + rnd(0, 26);
   return e;
+}
+function setStop(e) {
+  e.stopX = WALL.x + 34 + e.rank * 20 + e.depth * 16;
 }
 
 function spawnOne(desc) {
@@ -1898,7 +1903,7 @@ function updateEnemies(dt) {
       if (e.dying <= 0) list.splice(i, 1);
       continue;
     }
-    e.stopX = WALL.x + enemyH(e) * 0.30 + e.depth * 12;
+    e.stopX = WALL.x + 34 + e.rank * 20 + e.depth * 16;
     if (e.kb > 0) {
       e.kbT += dt;
       e.x += e.kb * dt;
@@ -2022,16 +2027,16 @@ function drawWall() {
 
   // ---- 성벽 본체 ----
   const g = ctx.createLinearGradient(0, WALL.backTop, 0, bot);
-  g.addColorStop(0, '#55637d');
-  g.addColorStop(0.30, '#3b465d');
-  g.addColorStop(0.72, '#242c3d');
-  g.addColorStop(1, '#12171f');
+  g.addColorStop(0, '#6b7994');
+  g.addColorStop(0.22, '#4f5c76');
+  g.addColorStop(0.62, '#333d52');
+  g.addColorStop(1, '#171d28');
   ctx.fillStyle = g;
   ctx.fillRect(-12, WALL.backTop, x1 + 12, bot - WALL.backTop);
 
   // ---- 돌 블록 ----
-  const bh = Math.max(13, WALL.h * 0.105);
-  const bw = Math.max(22, x1 * 0.30);
+  const bh = Math.max(13, WALL.h * 0.115);
+  const bw = Math.max(24, x1 * 0.26);
   ctx.save();
   for (let r = 0; r * bh < bot - WALL.top; r++) {
     const off = (r % 2) ? -bw * 0.5 : 0;
@@ -2041,12 +2046,13 @@ function drawWall() {
       if (by > bot) break;
       const h1 = hash2(r, c);
       const h2v = hash2(c, r + 7);
-      ctx.fillStyle = 'rgba(' + ((58 + h1 * 46) | 0) + ',' + ((70 + h1 * 46) | 0) + ',' + ((94 + h1 * 52) | 0) + ',0.92)';
+      const shade = Math.max(0, 1 - r / Math.max(3, (bot - WALL.top) / bh)) * 26;
+      ctx.fillStyle = 'rgba(' + ((72 + h1 * 40 + shade) | 0) + ',' + ((86 + h1 * 40 + shade) | 0) + ',' + ((112 + h1 * 44 + shade) | 0) + ',0.95)';
       ctx.fillRect(bx + 1.2, by + 1.2, bw - 2.4, bh - 2.4);
-      ctx.fillStyle = 'rgba(190,214,246,' + (0.03 + h2v * 0.06) + ')';
-      ctx.fillRect(bx + 1.2, by + 1.2, bw - 2.4, 1.5);
+      ctx.fillStyle = 'rgba(200,220,250,' + (0.04 + h2v * 0.07) + ')';
+      ctx.fillRect(bx + 1.2, by + 1.2, bw - 2.4, 1.6);
       if (h2v > 0.86) {
-        ctx.fillStyle = 'rgba(20,26,38,.5)';
+        ctx.fillStyle = 'rgba(20,26,38,.45)';
         ctx.fillRect(bx + 3, by + bh * 0.5, bw * 0.4, 1.2);
       }
     }
@@ -2072,7 +2078,7 @@ function drawWall() {
   ctx.fillRect(-12, top - 2, x1 + 12, 2.4);
 
   // ---- 성문 ----
-  const gw = Math.min(x1 * 0.52, 74), gh = WALL.h * 0.42;
+  const gw = Math.min(x1 * 0.46, 86), gh = WALL.h * 0.44;
   const gx = x1 * 0.24, gy = bot - gh;
   ctx.save();
   ctx.fillStyle = 'rgba(8,11,18,.92)';
