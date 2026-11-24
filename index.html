@@ -888,7 +888,7 @@ const enemyHp = st => 92 * Math.pow(1.175, st - 1);
 const enemyAtk = st => 5.0 * Math.pow(1.135, st - 1);
 const goldPerKill = st => 3.1 * Math.pow(1.155, st - 1);
 /* 밸런스 다이얼 (튜닝용) */
-const BAL = { hp: 1.55, dmg: 1.50, count: 1.0, spd: 1.0 };
+const BAL = { hp: 1.55, dmg: 1.80, count: 1.0, spd: 1.0 };
 const KILLS_PER_STAGE = 7;
 const isBossStage = st => st % 10 === 0;
 /* 웨이브 편성: 3웨이브, 보스 스테이지는 마지막 웨이브에 보스+호위 */
@@ -1050,7 +1050,7 @@ const B = {
   combo: 0, comboT: 0,
   stageFlash: 0, bgKick: 0,
   wave: { idx: -1, total: 3, plan: [], spawnQ: [], state: 'idle', timer: 0, spawned: 0, killed: 0, totalCount: 0 },
-  boss: null, dgn: null, wipeT: 0, breakT: 0, healT: 0, lastUlt: 0,
+  boss: null, dgn: null, wipeT: 0, breakT: 0, breakStreak: 0, healT: 0, lastUlt: 0,
   bgScroll: 0, chapter: 0, tint: 0
 };
 
@@ -1118,7 +1118,7 @@ function buildCracks() {
     WALL.cracks.push(pts);
   }
 }
-const enemyH = e => e.isDgn ? heroH * 0.82 : heroH * (e.boss ? 1.45 : 0.86) * e.scale;
+const enemyH = e => e.isDgn ? heroH * 0.80 : heroH * (e.boss ? 1.42 : 0.80) * e.scale;
 
 /* ---------- fx helpers ---------- */
 function addNum(x, y, val, kind) {
@@ -1199,7 +1199,7 @@ function makeEnemy(opt) {
   return e;
 }
 function setStop(e) {
-  e.stopX = WALL.x + 26 + e.rank * 62 + e.depth * 26 + e.jit;
+  e.stopX = WALL.x + 24 + e.rank * 74 + e.depth * 26 + e.jit;
 }
 
 function spawnOne(desc) {
@@ -1282,6 +1282,7 @@ function updateWave(dt) {
   }
 }
 function advanceStage() {
+  B.breakStreak = 0;
   state.stage++;
   state.best = Math.max(state.best, state.stage);
   B.stageFlash = 0.6;
@@ -1298,6 +1299,7 @@ function advanceStage() {
 function wallBreak() {
   if (B.breakT > 0 || B.mode !== 'stage') return;
   B.breakT = 3.1;
+  B.breakStreak = (B.breakStreak || 0) + 1;
   WALL.hp = 0;
   WALL.glow = 1; WALL.shake = 16;
   B.shake = 22;
@@ -1314,6 +1316,7 @@ function wallBreak() {
   updateHud();
 }
 function retryStage() {
+  const fallback = B.breakStreak >= 3 && state.stage > 1;
   B.enemies.length = 0;
   B.projs.length = 0;
   B.pending.length = 0;
@@ -1327,7 +1330,15 @@ function retryStage() {
   B.wave.spawnQ = [];
   B.wave.spawned = 0; B.wave.killed = 0;
   addFx({ type: 'ring', x: WALL.x * 0.6, y: WALL.top, r0: 12, r1: 260, life: 0.9, max: 0.9, color: '150,210,255' });
-  toast('전열 재정비 완료 · 스테이지 재도전');
+  if (fallback) {
+    state.stage -= 1;
+    B.breakStreak = 0;
+    startStage(state.stage, false);
+    WALL.hp = WALL.max;
+    toast('전열 후퇴 · 스테이지 ' + state.stage + '에서 재정비');
+  } else {
+    toast('전열 재정비 완료 · 스테이지 재도전');
+  }
   updateHud(); save();
 }
 
@@ -1906,7 +1917,7 @@ function updateEnemies(dt) {
       if (e.dying <= 0) list.splice(i, 1);
       continue;
     }
-    e.stopX = WALL.x + 26 + e.rank * 62 + e.depth * 26 + e.jit;
+    e.stopX = WALL.x + 24 + e.rank * 74 + e.depth * 26 + e.jit;
     if (e.kb > 0) {
       e.kbT += dt;
       e.x += e.kb * dt;
@@ -2349,11 +2360,12 @@ function drawEnemies() {
     if (e.spawnIn > 0) alpha = clamp(1 - e.spawnIn / 0.34, 0, 1);
 
     const bob = Math.sin(t * 1.9 + e.wob) * 2.0;
-    const yb = e.y + bob - hop;
+    const rankY = (e.rank || 0) * 7;
+    const yb = e.y + bob - hop - rankY;
     const x = e.x + dx;
 
     const liftRatio = clamp(hop / (h * 0.4), 0, 1);
-    drawShadow(x, e.y + 7, h * (e.boss ? 0.40 : 0.28) * (1 - liftRatio * 0.35), (e.boss ? 0.55 : 0.42) * (1 - liftRatio * 0.4) * alpha);
+    drawShadow(x, e.y + 7 - rankY, h * (e.boss ? 0.40 : 0.28) * (1 - liftRatio * 0.35), (e.boss ? 0.55 : 0.42) * (1 - liftRatio * 0.4) * alpha);
 
     if (e.boss) {
       const col = e.spr === 'mob_dragon' ? '255,90,60' : e.spr === 'mob_darkknight' ? '160,80,255' : '255,190,90';
