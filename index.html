@@ -118,9 +118,9 @@ body{
 .cutin{position:absolute;inset:0;z-index:14;display:none;pointer-events:none;overflow:hidden}
 .cutin.on{display:block}
 .cutin .flash{position:absolute;inset:0;background:#fff;opacity:0;animation:cutFlash .55s ease-out}
-@keyframes cutFlash{0%{opacity:.85}30%{opacity:.15}100%{opacity:0}}
+@keyframes cutFlash{0%{opacity:.5}30%{opacity:.08}100%{opacity:0}}
 .cutin .band{
-  position:absolute;left:-6%;right:-6%;top:50%;height:min(26%,190px);transform:translateY(-50%) skewX(-11deg);
+  position:absolute;left:-6%;right:-6%;top:50%;height:min(15%,124px);transform:translateY(-50%) skewX(-11deg);
   background:linear-gradient(90deg,rgba(10,14,26,0),var(--c1) 12%,var(--c2) 55%,rgba(10,14,26,0));
   border-top:2px solid rgba(255,255,255,.55);border-bottom:2px solid rgba(255,255,255,.25);
   box-shadow:0 0 40px var(--c2),inset 0 0 60px rgba(0,0,0,.45);
@@ -140,8 +140,8 @@ body{
 .cutin .who{font-size:clamp(8px,1.25vh,11px);font-weight:900;letter-spacing:.34em;color:rgba(255,255,255,.92)}
 .cutin .nm{font-family:"Black Han Sans",sans-serif;font-size:clamp(22px,5.2vh,50px);color:#fff;
   text-shadow:0 3px 0 rgba(0,0,0,.35),0 0 22px rgba(255,255,255,.55)}
-.cutin .rays{position:absolute;inset:-40%;background:repeating-conic-gradient(from 0deg,rgba(255,255,255,.14) 0deg 5deg,transparent 5deg 14deg);
-  animation:spin 6s linear infinite;opacity:.5}
+.cutin .rays{position:absolute;inset:-40%;background:repeating-conic-gradient(from 0deg,rgba(255,255,255,.10) 0deg 4deg,transparent 4deg 16deg);
+  animation:spin 9s linear infinite;opacity:.14;mix-blend-mode:screen}
 @keyframes spin{to{transform:rotate(360deg)}}
 
 /* mission bar */
