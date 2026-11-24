@@ -986,7 +986,7 @@ function makeEnemy(opt) {
   const hp = opt.hp || (boss ? enemyHp(st) * 11 : enemyHp(st));
   return {
     spr, boss, name: opt.name || (boss ? '보스 · ' + (BOSS_NAME[spr] || '군주') : MOB_NAME[spr] || '몬스터'),
-    hp, maxHp: hp, atk: opt.atk || (boss ? enemyAtk(st) * 1.55 : enemyAtk(st)),
+    hp, maxHp: hp, atk: opt.atk || (boss ? enemyAtk(st) * 1.22 : enemyAtk(st)),
     scale: opt.scale || (boss ? 1.62 : 1),
     x: enemyBaseX() + (boss ? 0 : rnd(-16, 16)), y: groundY,
     atkT: boss ? 2.2 : 1.9, anim: 0, hurt: 0, dying: 0, spawnT: 0,
@@ -1346,7 +1346,7 @@ function updateBattle(dt) {
         e.anim = 1;
       }
       if (e.atkT <= 0) {
-        e.atkT = e.boss ? rnd(2.6, 3.4) : rnd(2.2, 3.0);
+        e.atkT = e.boss ? rnd(3.0, 3.8) : rnd(2.2, 3.0);
         enemyStrike(e);
       }
     }
@@ -1859,7 +1859,8 @@ function drawHits() {
     ctx.translate(h.x, h.y);
     ctx.scale(scale, scale);
     const big = h.crit || h.kind === 'gold';
-    ctx.font = '900 ' + (big ? 22 : 17) + 'px "Black Han Sans","Noto Sans KR",sans-serif';
+    const fs = big ? clamp(H * 0.031, 19, 31) : clamp(H * 0.024, 15, 24);
+    ctx.font = '900 ' + fs + 'px "Black Han Sans","Noto Sans KR",sans-serif';
     ctx.textAlign = 'center';
     ctx.lineJoin = 'round';
     if (h.kind === 'heal') {
@@ -1890,12 +1891,12 @@ function drawHits() {
     ctx.fillText(h.txt, 0, 0);
     if (h.crit) {
       ctx.globalAlpha *= 0.9;
-      ctx.font = '900 8px "Noto Sans KR",sans-serif';
+      ctx.font = '900 ' + Math.max(8, fs * 0.4) + 'px "Noto Sans KR",sans-serif';
       ctx.fillStyle = '#ff9a3d';
       ctx.strokeStyle = 'rgba(60,20,0,.9)';
       ctx.lineWidth = 2.5;
-      ctx.strokeText('CRITICAL', 0, 10);
-      ctx.fillText('CRITICAL', 0, 10);
+      ctx.strokeText('CRITICAL', 0, fs * 0.52);
+      ctx.fillText('CRITICAL', 0, fs * 0.52);
     }
     ctx.restore();
   });
