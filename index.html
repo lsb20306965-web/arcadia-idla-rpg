@@ -87,7 +87,7 @@ body{
 .combo i{display:block;font-style:normal;font-size:11px;font-weight:900;letter-spacing:.32em;color:#ffd68a}
 
 /* boss */
-.boss-wrap{position:absolute;left:50%;top:calc(58px + env(safe-area-inset-top));transform:translateX(-50%);
+.boss-wrap{position:absolute;left:50%;top:calc(92px + env(safe-area-inset-top));transform:translateX(-50%);
   width:min(64%,560px);z-index:8;display:none;pointer-events:none}
 .boss-wrap.on{display:block;animation:bossIn .4s ease-out}
 @keyframes bossIn{from{opacity:0;transform:translate(-50%,-14px) scale(.94)}to{opacity:1;transform:translate(-50%,0) scale(1)}}
@@ -193,6 +193,47 @@ body{
   font-size:11.5px;font-weight:700;color:#e8eefc;opacity:0;transition:opacity .22s,transform .22s;pointer-events:none;
   box-shadow:0 8px 24px rgba(0,0,0,.6);max-width:88%;text-align:center}
 .toast.on{opacity:1;transform:translate(-50%,0)}
+
+/* ================= wall & wave HUD ================= */
+.wallhud{position:absolute;left:10px;top:calc(50px + env(safe-area-inset-top));z-index:8;width:min(60%,430px);pointer-events:none}
+.wh-top{display:flex;align-items:center;gap:5px;font-size:9.5px;font-weight:800;color:#cfd9ee;
+  text-shadow:0 1px 2px #000,0 0 8px #000}
+.wh-ico{font-size:12px;filter:drop-shadow(0 1px 2px #000)}
+.wh-lbl{letter-spacing:.02em;white-space:nowrap}
+.wh-val{margin-left:auto;font-variant-numeric:tabular-nums;color:#dfe9ff;font-size:9.5px}
+.wh-wave{font-family:"Black Han Sans",sans-serif;font-size:10px;color:#ffd98a;background:rgba(60,44,12,.78);
+  border:1px solid #6d5620;border-radius:4px;padding:0 5px;letter-spacing:.04em;white-space:nowrap}
+.wh-bar{position:relative;height:11px;margin-top:3px;border-radius:6px;background:rgba(8,11,20,.82);
+  border:1px solid rgba(110,140,190,.45);overflow:hidden;
+  box-shadow:inset 0 1px 3px rgba(0,0,0,.7),0 2px 10px rgba(0,0,0,.45)}
+.wh-bar > i{display:block;height:100%;width:100%;border-radius:5px;
+  background:linear-gradient(180deg,#8fe6b0,#3fb277 55%,#1d7a4a);transition:width .18s;
+  box-shadow:inset 0 1px 0 rgba(255,255,255,.45)}
+.wh-bar::after{content:"";position:absolute;inset:0;pointer-events:none;
+  background:repeating-linear-gradient(90deg,rgba(0,0,0,.20) 0 2px,transparent 2px 9px)}
+.wallhud.low .wh-bar > i{background:linear-gradient(180deg,#ffb07a,#ff7043 55%,#c62b1f);animation:wallPulse .8s infinite}
+.wallhud.low .wh-val{color:#ffb3b3}
+@keyframes wallPulse{0%,100%{filter:brightness(1)}50%{filter:brightness(1.5)}}
+.wh-tip{margin-top:2px;font-size:8px;color:#8fa0bd;opacity:.8}
+.danger{position:absolute;inset:0;z-index:12;pointer-events:none;opacity:0;transition:opacity .35s;
+  box-shadow:inset 0 0 50px 6px rgba(255,50,60,.55),inset 0 0 120px 24px rgba(150,0,20,.30)}
+.danger.on{opacity:1;animation:dangerPulse .9s infinite}
+@keyframes dangerPulse{0%,100%{opacity:.35}50%{opacity:1}}
+.breakbanner,.wavebanner{position:absolute;left:50%;top:34%;transform:translate(-50%,-50%) scale(.8);z-index:13;
+  text-align:center;opacity:0;visibility:hidden;pointer-events:none;width:100%}
+.breakbanner.on{visibility:visible;animation:breakIn 2.4s ease-out both}
+@keyframes breakIn{0%{opacity:0;transform:translate(-50%,-50%) scale(.7)}10%{opacity:1;transform:translate(-50%,-50%) scale(1.06)}
+  18%{transform:translate(-50%,-50%) scale(1)}80%{opacity:1}100%{opacity:0;transform:translate(-50%,-56%) scale(1)}}
+.breakbanner .t1{font-family:"Black Han Sans",sans-serif;font-size:clamp(24px,5.4vh,46px);color:#ff8a8a;
+  -webkit-text-stroke:2px rgba(60,0,10,.8);text-shadow:0 0 26px rgba(255,60,60,.85),0 4px 0 rgba(0,0,0,.5)}
+.breakbanner .t2{margin-top:3px;font-size:10.5px;font-weight:900;letter-spacing:.28em;color:#ffc9c9}
+.wavebanner.on{visibility:visible;animation:waveIn 1.4s ease-out both}
+@keyframes waveIn{0%{opacity:0;transform:translate(-50%,-50%) scale(.8)}14%{opacity:1;transform:translate(-50%,-50%) scale(1)}
+  76%{opacity:1}100%{opacity:0;transform:translate(-50%,-50%) scale(1.04)}}
+.wavebanner b{display:block;font-family:"Black Han Sans",sans-serif;font-size:clamp(18px,3.6vh,30px);color:#fff;
+  letter-spacing:.06em;text-shadow:0 0 18px rgba(140,200,255,.9),0 3px 0 rgba(0,0,0,.45)}
+.wavebanner i{display:block;font-style:normal;font-size:9.5px;font-weight:900;letter-spacing:.28em;color:#ffd98a;margin-top:2px}
+@media (max-width:720px){.wh-tip{display:none}.wallhud{width:min(66%,340px);top:calc(46px + env(safe-area-inset-top))}}
 
 /* ================= side ================= */
 .side-col{
@@ -452,11 +493,23 @@ body{
 .rewline{display:flex;align-items:center;justify-content:space-between;font-size:11px;color:#cfdaf0;
   padding:6px 8px;border-radius:7px;background:#0f1524;border:1px solid #222c44;margin-top:5px}
 .rewline b{font-family:"Black Han Sans",sans-serif;color:#ffd98a;font-size:13px}
-.dgn-timer{position:absolute;left:50%;top:calc(58px + env(safe-area-inset-top));transform:translateX(-50%);z-index:8;
+.dgn-timer{position:absolute;left:50%;top:calc(88px + env(safe-area-inset-top));transform:translateX(-50%);z-index:8;
   display:none;align-items:center;gap:6px;background:rgba(10,14,24,.86);border:1px solid #3d4a6c;border-radius:20px;
   padding:4px 12px;font-size:11px;font-weight:900;color:#ffe6a8}
 .dgn-timer.on{display:flex}
 .dgn-timer b{font-family:"Black Han Sans",sans-serif;font-size:14px;color:#fff}
+
+/* 성벽 카드 */
+.wallcard{background:linear-gradient(160deg,#1b2334,#0d1220);border-color:#3a4a66}
+.wallcard .wc-top{display:flex;align-items:center;gap:7px}
+.wallcard .wc-ico{width:32px;height:32px;flex:0 0 auto;border-radius:8px;display:grid;place-items:center;font-size:16px;
+  background:linear-gradient(160deg,#2c3a52,#161e2c);border:1px solid #46587a}
+.wallcard .wc-main{flex:1 1 auto;min-width:0}
+.wallcard .wc-t{font-size:11.5px;font-weight:900;color:#e6edfa}
+.wallcard .wc-s{font-size:9px;color:#8b9ab8;line-height:1.35;margin-top:1px}
+.wallcard .wc-val{font-family:"Black Han Sans",sans-serif;font-size:15px;color:#8fe6b0;white-space:nowrap}
+.wallcard .wc-bar{height:7px;border-radius:4px;background:#101724;border:1px solid #24304a;overflow:hidden;margin-top:7px}
+.wallcard .wc-bar > i{display:block;height:100%;background:linear-gradient(90deg,#3fb277,#8fe6b0);transition:width .25s}
 
 /* ================= responsive ================= */
 @media (max-aspect-ratio: 16/10){
@@ -483,6 +536,12 @@ body{
   .mission .mtext{font-size:10px}
   .mission .mbtn{padding:6px 9px;font-size:9.5px}
   .mission .mrew{font-size:8.5px}
+  .wallhud{top:calc(38px + env(safe-area-inset-top));width:min(56%,300px)}
+  .wh-bar{height:9px}
+  .wh-top{font-size:8.5px}
+  .wh-tip{display:none}
+  .boss-wrap{top:calc(70px + env(safe-area-inset-top))}
+  .dgn-timer{top:calc(70px + env(safe-area-inset-top))}
   .party{display:none}
   .pcard{width:39px;padding:2px}
   .pcard .pav{width:19px;height:19px}
@@ -520,7 +579,7 @@ body{
         <div class="crest">🛡️</div>
         <div>
           <div class="hud-title">아르카디아 기사단 <span class="tag-live">LIVE</span></div>
-          <div class="hud-sub"><b id="stageTxt">1</b> 스테이지 · <span id="stageName">달빛 초원</span> · <span id="killTxt">0/6</span></div>
+          <div class="hud-sub"><b id="stageTxt">1</b> 스테이지 · <span id="stageName">달빛 초원</span> · <span id="killTxt">적 0마리</span></div>
         </div>
       </div>
       <div class="hud-right">
@@ -531,6 +590,18 @@ body{
         <button class="ico-btn" id="helpBtn" title="도움말">?</button>
       </div>
     </div>
+
+    <div class="wallhud" id="wallHud">
+      <div class="wh-top">
+        <span class="wh-ico">🏰</span>
+        <span class="wh-lbl">성벽 내구도</span>
+        <span class="wh-val" id="wallTxt">620 / 620</span>
+        <span class="wh-wave" id="waveTxt">WAVE 1/3</span>
+      </div>
+      <div class="wh-bar"><i id="wallFill"></i></div>
+      <div class="wh-tip">전열 붕괴 시 해당 스테이지 재도전</div>
+    </div>
+    <div class="danger" id="danger"></div>
 
     <div class="combo" id="combo"><b>0</b><i>COMBO</i></div>
 
@@ -553,6 +624,8 @@ body{
     </div>
 
     <div class="stageclear" id="stageClear"><div class="t1">STAGE CLEAR</div><div class="t2" id="scSub">NEXT STAGE</div></div>
+    <div class="breakbanner" id="breakBanner"><div class="t1">방어선 붕괴!</div><div class="t2">전열 재정비 · 재도전</div></div>
+    <div class="wavebanner" id="waveBanner"><b id="waveBannerTxt">WAVE 1</b><i id="waveBannerSub">몬스터 습격</i></div>
     <div class="cutin" id="cutin">
       <div class="rays"></div>
       <div class="band"></div>
@@ -572,8 +645,8 @@ body{
       </div>
       <div class="sh-stats">
         <div class="sh-chip">공격 <b id="atkTxt">0</b></div>
+        <div class="sh-chip">성벽 <b id="wallChip">0</b></div>
         <div class="sh-chip">치명 <b id="critTxt">0%</b></div>
-        <div class="sh-chip">치피 <b id="cdmgTxt">0%</b></div>
       </div>
     </div>
     <div class="tabs">
@@ -655,11 +728,17 @@ const ITEM = {}; ITEMS.forEach(it => ITEM[it.id] = it);
 const RANKS = ['기사', '상급 기사', '정예 기사', '기사단장', '성기사', '아르카디아의 수호자'];
 
 const STATS = {
-  atk: { name: '공격력', icon: '⚔️', base: 30, g: 1.10, desc: '모든 파티원 공격력 +8%' },
-  hp: { name: '최대 체력', icon: '❤️', base: 30, g: 1.10, desc: '파티 최대 체력 +8%' },
-  crit: { name: '치명타 확률', icon: '🎯', base: 80, g: 1.18, desc: '치명타 확률 +0.35%p' },
-  cdmg: { name: '치명타 피해', icon: '💥', base: 100, g: 1.18, desc: '치명타 피해 +4%p' }
+  atk: { name: '공격력', icon: '⚔️', base: 30, g: 1.10, desc: '모든 파티원 공격력 +8%', grp: 'party' },
+  hp: { name: '최대 체력', icon: '❤️', base: 30, g: 1.10, desc: '파티 최대 체력 +8%', grp: 'party' },
+  crit: { name: '치명타 확률', icon: '🎯', base: 80, g: 1.18, desc: '치명타 확률 +0.35%p', grp: 'party' },
+  cdmg: { name: '치명타 피해', icon: '💥', base: 100, g: 1.18, desc: '치명타 피해 +4%p', grp: 'party' },
+  wall: { name: '성벽 내구도', icon: '🏰', base: 110, g: 1.13, desc: '성벽 최대 내구도 +300', grp: 'wall' },
+  wallDef: { name: '성벽 방어', icon: '🧱', base: 150, g: 1.19, desc: '성벽이 받는 피해 -1.2%p', grp: 'wall' },
+  knock: { name: '넉백 강화', icon: '💨', base: 170, g: 1.20, desc: '넉백 거리·범위 +5%', grp: 'wall' }
 };
+/* 성벽 계열 스탯 상한 */
+const WALLDEF_MAX_LV = 48;   // 57.6%
+const KNOCK_MAX_LV = 30;     // x2.5
 
 const PRODUCTS = [
   { id: 'starter', icon: '🎁', badge: '1회 한정', badgeCls: '', name: '초보자 스타터 팩', price: 3300,
@@ -684,16 +763,16 @@ const DUNGEONS = {
   promote: { name: '기사 승급전', icon: '🏅', desc: '25초 안에 시련의 기사를 쓰러뜨리면 계급이 상승합니다. (전 능력치 +12%)', time: 25 }
 };
 
-/* party classes */
+/* party classes — 방어선 편성 */
 const CLASSES = [
-  { key: 'knight', name: '기사', role: '근접 딜러', color: '#7fb2ff', c2: '#2a4d99', icon: '⚔️', img: 'hero_knight',
-    skill: '성검의 일격', hits: 2, mult: 0.95, cd: 1.0, hpf: 1.45, reach: 1, sfx: 'hit' },
-  { key: 'archer', name: '궁수', role: '원거리 딜러', color: '#8ef0a0', c2: '#2a6b3d', icon: '🏹', img: 'hero_archer',
-    skill: '폭풍의 화살', hits: 3, mult: 0.42, cd: 0.62, hpf: 0.85, reach: 0, sfx: 'arrow' },
-  { key: 'mage', name: '대마법사', role: '광역 딜러', color: '#c39bff', c2: '#4d2d8c', icon: '🔮', img: 'hero_mage',
-    skill: '메테오 스트라이크', hits: 4, mult: 0.55, cd: 1.45, hpf: 0.8, reach: 0, sfx: 'fire' },
-  { key: 'priest', name: '성직자', role: '힐 · 버프', color: '#ffd98a', c2: '#8a6320', icon: '✨', img: 'hero_priest',
-    skill: '빛의 축복', hits: 3, mult: 0.30, cd: 1.15, hpf: 0.95, reach: 0, sfx: 'holy' }
+  { key: 'knight', name: '기사', role: '전방 탱커 · 넉백', color: '#7fb2ff', c2: '#2a4d99', icon: '⚔️', img: 'hero_knight',
+    skill: '방패 밀치기', ult: '성검의 일격', hits: 2, mult: 0.95, cd: 0.95, hpf: 1.60, reach: 1 },
+  { key: 'archer', name: '궁수', role: '다중 사격', color: '#8ef0a0', c2: '#2a6b3d', icon: '🏹', img: 'hero_archer',
+    skill: '다발 화살비', ult: '폭풍의 화살비', hits: 3, mult: 0.40, cd: 0.60, hpf: 0.85, reach: 0 },
+  { key: 'mage', name: '대마법사', role: '광역 폭격', color: '#c39bff', c2: '#4d2d8c', icon: '🔮', img: 'hero_mage',
+    skill: '화염 폭발', ult: '메테오 스트라이크', hits: 4, mult: 0.52, cd: 1.40, hpf: 0.80, reach: 0 },
+  { key: 'priest', name: '성직자', role: '힐 · 성벽 수복', color: '#ffd98a', c2: '#8a6320', icon: '✨', img: 'hero_priest',
+    skill: '빛의 축복', ult: '성역', hits: 3, mult: 0.30, cd: 1.15, hpf: 0.95, reach: 0 }
 ];
 
 const ASSETS = {
@@ -715,8 +794,8 @@ Object.keys(ASSETS).forEach(k => {
 /* ---------- state ---------- */
 function defaultState() {
   return {
-    v: 2, gold: 1200, dia: 600,
-    lv: { atk: 0, hp: 0, crit: 0, cdmg: 0 },
+    v: 3, gold: 1200, dia: 600,
+    lv: { atk: 0, hp: 0, crit: 0, cdmg: 0, wall: 0, wallDef: 0, knock: 0 },
     stage: 1, kills: 0, best: 1, rank: 0,
     equip: { weapon: null, armor: null, skill: null },
     inv: [], uid: 1,
@@ -780,15 +859,20 @@ function heroStats() {
   const crit = Math.min(70, 5 + 0.35 * state.lv.crit);
   const cdmg = Math.min(500, 150 + 4 * state.lv.cdmg);
   const skill = sk ? { name: itemDef(sk).name, mult: itemStat(sk) / 100 } : { name: '강타', mult: 1.0 };
-  // total party dps with crit expectation
+  const wall = Math.round((620 + 300 * state.lv.wall) * rankMult);
+  const wallDef = Math.min(58, state.lv.wallDef * 1.2);
+  const knock = 1 + state.lv.knock * 0.05;
+  // total party dps with crit expectation (single target 기준)
   const critF = 1 + crit / 100 * (cdmg / 100 - 1);
   let dps = 0;
   CLASSES.forEach(c => { dps += atk * c.mult * c.hits / c.cd; });
   dps *= critF;
-  const power = Math.round(dps * 8 + hp * 3.4);
-  return { atk, hp, crit, cdmg, critF, skill, dps, power };
+  const power = Math.round(dps * 8 + hp * 3.4 + wall * 0.5);
+  return { atk, hp, crit, cdmg, critF, skill, dps, power, wall, wallDef, knock };
 }
 const costOf = (stat, lv) => Math.floor(STATS[stat].base * Math.pow(STATS[stat].g, lv));
+const wallDefPct = () => Math.min(58, state.lv.wallDef * 1.2);
+const wallHpMax = () => Math.round((620 + 300 * state.lv.wall) * (1 + state.rank * 0.12));
 
 /* ---------- stage / enemies ---------- */
 const stageName = st => {
@@ -800,11 +884,30 @@ const stageName = st => {
   if (st <= 34) return '마왕성 회랑';
   return '심연의 옥좌';
 };
-const enemyHp = st => 95 * Math.pow(1.18, st - 1);
-const enemyAtk = st => 5.4 * Math.pow(1.14, st - 1);
-const goldPerKill = st => 6 * Math.pow(1.165, st - 1);
+const enemyHp = st => 92 * Math.pow(1.175, st - 1);
+const enemyAtk = st => 5.0 * Math.pow(1.135, st - 1);
+const goldPerKill = st => 3.1 * Math.pow(1.155, st - 1);
 const KILLS_PER_STAGE = 7;
 const isBossStage = st => st % 10 === 0;
+/* 웨이브 편성: 3웨이브, 보스 스테이지는 마지막 웨이브에 보스+호위 */
+const WAVES_PER_STAGE = 3;
+function wavePlan(st) {
+  const base = 8 + Math.min(9, Math.floor((st - 1) * 0.55));
+  const b2 = base + 2 + Math.floor(st / 12);
+  const b3 = base + 4 + Math.floor(st / 8);
+  if (isBossStage(st)) {
+    return [
+      { count: base, boss: false },
+      { count: b2, boss: false },
+      { count: 4 + Math.floor(st / 10), boss: true }
+    ];
+  }
+  return [
+    { count: base, boss: false },
+    { count: b2, boss: false },
+    { count: b3, boss: false }
+  ];
+}
 
 function mobTier(st) {
   if (st <= 4) return 'mob_slime';
@@ -817,6 +920,7 @@ function bossSprite(st) {
   return ['mob_slime', 'mob_orc', 'mob_darkknight', 'mob_dragon'][(ch - 1) % 4] || 'mob_dragon';
 }
 const MOB_NAME = { mob_slime: '슬라임', mob_orc: '오크 전사', mob_darkknight: '다크나이트', mob_dragon: '레드 드래곤' };
+const MOB_SPD = { mob_slime: 60, mob_orc: 74, mob_darkknight: 86, mob_dragon: 94 };
 const BOSS_NAME = { mob_slime: '킹 슬라임', mob_orc: '오크 대장', mob_darkknight: '다크나이트 로드', mob_dragon: '레드 드래곤' };
 
 /* ---------- missions ---------- */
@@ -828,6 +932,7 @@ function missionAt(i) {
     { t: '소환 10회 진행', rew: 700, prog: () => [state.stats.pulls, 10] },
     { t: '치명타 확률 12% 달성', rew: 800, prog: () => [Math.round(heroStats().crit), 12] },
     { t: '최대 체력 Lv.8 달성', rew: 900, prog: () => [state.lv.hp, 8] },
+    { t: '성벽 내구도 Lv.5 달성', rew: 1100, prog: () => [state.lv.wall, 5] },
     { t: '스테이지 10 보스 처치', rew: 1200, prog: () => [state.stats.boss, 1] },
     { t: '황금 동굴 1회 클리어', rew: 900, prog: () => [state.stats.dungeonGold || 0, 1] },
     { t: '영웅 등급 장비 획득', rew: 1500, prog: () => [state.inv.some(it => ITEM[it.id].grade >= 4) ? 1 : 0, 1] },
@@ -925,29 +1030,44 @@ const Audio2 = (() => {
   return api;
 })();
 /* ============================================================
-   BATTLE ENGINE
+   BATTLE ENGINE — 성벽 방어 웨이브 (v3)
    ============================================================ */
 const cv = $('#cv');
 const ctx = cv.getContext('2d');
-let W = 0, H = 0, DPR = 1, groundY = 0;
-let heroH = 150;
+let W = 0, H = 0, DPR = 1, groundY = 0, heroH = 150;
 
-const B = {
-  t: 0, mode: 'stage', paused: false,
-  enemy: null, queue: [],
-  hits: [], fx: [], parts: [], projs: [], pending: [],
-  shake: 0, sx: 0, sy: 0, hitStop: 0,
-  combo: 0, comboT: 0, comboShow: 0,
-  stageFlash: 0, ultT: 5, ultIdx: 0, bgKick: 0,
-  dgn: null, wipeT: 0, spawnT: 0,
-  bgScroll: 0, midScroll: 0, chapter: 0, tint: 0
+const WALL = {
+  x: 100, h: 190, top: 0, backTop: 0, hp: 1, max: 1,
+  glow: 0, shake: 0, cracks: [], torch: 0
 };
 
+const B = {
+  t: 0, mode: 'stage', uid: 0,
+  enemies: [], hits: [], fx: [], parts: [], projs: [], pending: [],
+  shake: 0, sx: 0, sy: 0, hitStop: 0,
+  combo: 0, comboT: 0,
+  stageFlash: 0, bgKick: 0,
+  wave: { idx: -1, total: 3, plan: [], spawnQ: [], state: 'idle', timer: 0, spawned: 0, killed: 0, totalCount: 0 },
+  boss: null, dgn: null, wipeT: 0, breakT: 0, healT: 0, lastUlt: 0,
+  bgScroll: 0, chapter: 0, tint: 0
+};
+
+const SFX_T = {};
+function sfx(name, gap) {
+  const g = gap === undefined ? 0.09 : gap;
+  if ((SFX_T[name] || -99) + g > B.t) return;
+  SFX_T[name] = B.t;
+  Audio2.play(name);
+}
+
 const party = CLASSES.map((c, i) => ({
-  ...c, i, hp: 100, maxHp: 100, atkT: 0.5 + i * 0.22, ultT: 2.4 + i * 1.1,
-  anim: 0, hurt: 0, down: 0, healGlow: 0, bob: i * 1.7, buff: 0, flash: 0
+  ...c, i, hp: 100, maxHp: 100, phase: i * 1.73,
+  atkT: 0.4 + i * 0.22, ultT: 5 + i * 2.1, skillT: 2.6 + i * 1.4,
+  anim: 0, animDur: 0.34, hurt: 0, down: 0, healGlow: 0,
+  x: 0, y: 0, hh: 100, bob: i * 1.7, flash: 0, cast: 0
 }));
 
+/* ---------- layout ---------- */
 function resize() {
   const r = cv.getBoundingClientRect();
   DPR = Math.min(2, window.devicePixelRatio || 1);
@@ -956,249 +1076,559 @@ function resize() {
   cv.width = Math.round(W * DPR);
   cv.height = Math.round(H * DPR);
   ctx.setTransform(DPR, 0, 0, DPR, 0, 0);
-  groundY = H * (H < 470 ? 0.79 : 0.855);
-  heroH = clamp(Math.min(H * 0.175, W * 0.15), 54, 170);
+  const compact = H < 470;
+  groundY = H * (compact ? 0.80 : 0.85);
+  heroH = clamp(Math.min(H * (compact ? 0.17 : 0.16), W * 0.145), 46, 140);
+  WALL.x = clamp(W * 0.235, 64, 225);
+  WALL.h = clamp(heroH * 1.30, 70, 205);
+  WALL.top = groundY - WALL.h;
+  WALL.backTop = WALL.top - heroH * 0.34;
+  buildCracks();
   layoutParty();
 }
-function heroX(i) {
-  const step = Math.min(W * 0.088, heroH * 0.78);
-  return W * 0.175 + step * i;
-}
+/* 성벽 위 대형: 앞줄(기사·궁수) / 뒷줄(마법사·성직자) */
+const FORMATION = [
+  { fx: 0.74, fy: 1.00, s: 1.00 },
+  { fx: 0.32, fy: 1.02, s: 0.97 },
+  { fx: 0.78, fy: 0.66, s: 0.90 },
+  { fx: 0.28, fy: 0.64, s: 0.90 }
+];
 function layoutParty() {
-  party.forEach((p, i) => { p.x = heroX(i); p.y = groundY; p.baseY = groundY; });
+  party.forEach((p, i) => {
+    const f = FORMATION[i];
+    p.x = WALL.x * f.fx;
+    p.y = WALL.top + (f.fy - 1) * heroH * 0.6 + 2;
+    p.hh = heroH * 0.84 * f.s;
+  });
 }
-function enemyBaseX() { return W * (W < 620 ? 0.70 : 0.695); }
+function buildCracks() {
+  WALL.cracks = [];
+  for (let i = 0; i < 3; i++) {
+    const pts = [];
+    let x = WALL.x * (0.30 + 0.20 * i);
+    let y = WALL.top + WALL.h * (0.24 + i * 0.20);
+    pts.push([x, y]);
+    for (let s = 0; s < 6; s++) {
+      x += rnd(-WALL.x * 0.15, WALL.x * 0.18);
+      y += WALL.h * 0.09 + rnd(-8, 12);
+      pts.push([clamp(x, 3, WALL.x - 3), y]);
+    }
+    WALL.cracks.push(pts);
+  }
+}
+const enemyH = e => e.isDgn ? heroH * 0.92 : heroH * (e.boss ? 1.45 : 1.0) * e.scale;
 
-/* ---------- floating numbers / fx ---------- */
+/* ---------- fx helpers ---------- */
 function addNum(x, y, val, kind) {
+  if (B.hits.length > 52) B.hits.shift();
   const crit = kind === 'crit';
   const plus = kind === 'heal' || kind === 'gold' || kind === 'dia';
   B.hits.push({
-    x: x + rnd(-14, 14), y: y + rnd(-10, 8),
-    vx: rnd(-16, 16), vy: crit ? rnd(-108, -80) : rnd(-84, -58),
-    life: crit ? 1.05 : 0.84, max: crit ? 1.05 : 0.84,
+    x: x + rnd(-13, 13), y: y + rnd(-9, 7),
+    vx: rnd(-18, 18), vy: crit ? rnd(-118, -88) : rnd(-88, -62),
+    life: crit ? 1.0 : 0.76, max: crit ? 1.0 : 0.76,
     txt: (plus ? '+' : '') + fmtFull(val),
-    kind, crit, heal: kind === 'heal', scale: crit ? 1.5 : 1
+    kind, crit, scale: crit ? 1.45 : kind === 'mini' ? 0.68 : 1
   });
 }
 function addFx(o) { B.fx.push(Object.assign({ life: 0.4, max: 0.4, t: 0 }, o)); }
 function spark(x, y, n, color, spd, grav) {
+  if (B.parts.length > 260) n = Math.min(n, 3);
   for (let i = 0; i < n; i++) {
     const a = rnd(0, Math.PI * 2), s = rnd(spd * 0.35, spd);
     B.parts.push({
       x, y, vx: Math.cos(a) * s, vy: Math.sin(a) * s - spd * 0.15,
-      life: rnd(0.25, 0.6), max: 0.6, r: rnd(1.2, 3.4), color, grav: grav === undefined ? 620 : grav
+      life: rnd(0.25, 0.6), max: 0.6, r: rnd(1.2, 3.2), color,
+      grav: grav === undefined ? 620 : grav
     });
   }
 }
 function at(delay, fn) { B.pending.push({ t: delay, fn }); }
 
-/* ---------- spawn ---------- */
+/* ---------- enemy queries ---------- */
+const aliveEnemies = () => B.enemies.filter(e => e.dying <= 0 && e.hp > 0);
+function frontEnemies(n) {
+  return aliveEnemies().sort((a, b) => a.x - b.x).slice(0, n);
+}
+function densest(radius) {
+  const list = aliveEnemies();
+  if (!list.length) return null;
+  let best = list[0], bestN = -1;
+  for (const a of list) {
+    let n = 0;
+    for (const b of list) if (Math.hypot(a.x - b.x, a.y - b.y) < radius) n++;
+    if (n > bestN) { bestN = n; best = a; }
+  }
+  return { x: best.x, y: best.y, n: bestN };
+}
+
+/* ---------- enemies ---------- */
 function makeEnemy(opt) {
+  opt = opt || {};
   const st = state.stage;
   const boss = !!opt.boss;
   const spr = opt.spr || (boss ? bossSprite(st) : mobTier(st));
-  const hp = opt.hp || (boss ? enemyHp(st) * 11 : enemyHp(st));
-  return {
-    spr, boss, name: opt.name || (boss ? '보스 · ' + (BOSS_NAME[spr] || '군주') : MOB_NAME[spr] || '몬스터'),
-    hp, maxHp: hp, atk: opt.atk || (boss ? enemyAtk(st) * 1.22 : enemyAtk(st)),
-    scale: opt.scale || (boss ? 1.62 : 1),
-    x: enemyBaseX() + (boss ? 0 : rnd(-16, 16)), y: groundY,
-    atkT: boss ? 2.2 : 1.9, anim: 0, hurt: 0, dying: 0, spawnT: 0,
-    tint: opt.tint || null, gold: opt.gold || 0, dia: opt.dia || 0, isDgn: !!opt.isDgn,
-    wander: rnd(0, 6.28)
+  const hp = opt.hp || (boss ? enemyHp(st) * 9.5 : enemyHp(st));
+  const depth = opt.depth === undefined ? Math.random() : opt.depth;
+  const e = {
+    uid: ++B.uid, spr, boss,
+    name: opt.name || (boss ? '보스 · ' + (BOSS_NAME[spr] || '군주') : (MOB_NAME[spr] || '몬스터')),
+    hp, maxHp: hp,
+    atk: opt.atk || (boss ? enemyAtk(st) * 1.6 : enemyAtk(st)),
+    scale: (opt.scale || 1) * (0.86 + 0.18 * depth),
+    depth,
+    x: opt.x || (W + 30 + rnd(0, 200)),
+    y: 0,
+    spd: (opt.spd || MOB_SPD[spr] || 70) * rnd(0.9, 1.12) * (boss ? 0.72 : 1),
+    stopX: 0, state: opt.state || 'walk',
+    t: rnd(0, 6.28), hop: rnd(0, 6.28), wob: rnd(0, 6.28),
+    hurt: 0, kb: 0, kbT: 0, anim: 0, dying: 0, spawnIn: 0.34,
+    atkT: rnd(0.4, 1.6),
+    thrower: !boss && (spr === 'mob_darkknight' || spr === 'mob_dragon'),
+    throwT: rnd(3, 7),
+    gold: opt.gold || 0, dia: opt.dia || 0, isDgn: !!opt.isDgn, tint: opt.tint || null
   };
+  e.y = groundY + 6 - (1 - depth) * heroH * 0.16;
+  e.stopX = WALL.x + enemyH(e) * 0.30 + depth * 12;
+  if (e.state === 'attack') e.x = e.stopX + rnd(0, 26);
+  return e;
 }
-function spawnStageEnemy() {
-  if (B.mode !== 'stage') return;
-  const st = state.stage;
-  if (isBossStage(st)) {
-    B.enemy = makeEnemy({ boss: true });
-    Audio2.play('boss');
-    B.shake = 10;
-    setTimeout(() => cutin({ who: 'BOSS', name: B.enemy.name.replace('보스 · ', ''), ico: '☠️', c1: 'rgba(120,10,20,.85)', c2: 'rgba(230,40,60,.85)' }), 120);
+
+function spawnOne(desc) {
+  const e = makeEnemy({ boss: !!desc.boss });
+  B.enemies.push(e);
+  if (e.boss) {
+    B.boss = e;
     $('#bossWrap').classList.add('on');
-    $('#bossName').textContent = B.enemy.name;
-  } else {
-    B.enemy = makeEnemy({});
-    $('#bossWrap').classList.remove('on');
+    $('#bossName').textContent = e.name;
+    Audio2.play('boss');
+    B.shake = Math.max(B.shake, 9);
   }
 }
 
+/* ---------- stage / wave director ---------- */
+function startStage(st, heal) {
+  B.mode = 'stage';
+  B.dgn = null;
+  B.enemies.length = 0;
+  B.projs.length = 0;
+  B.pending.length = 0;
+  B.boss = null;
+  B.breakT = 0;
+  $('#bossWrap').classList.remove('on');
+  $('#dgnTimer').classList.remove('on');
+  party.forEach(p => {
+    p.down = 0; p.hurt = 0; p.anim = 0;
+    p.hp = heal ? p.maxHp : Math.max(p.maxHp * 0.55, p.hp);
+    p.atkT = rnd(0.2, 0.8);
+  });
+  const plan = wavePlan(st);
+  B.wave = { idx: -1, total: plan.length, plan, spawnQ: [], state: 'intro', timer: 1.1, spawned: 0, killed: 0, totalCount: 0 };
+  updateHud();
+}
+function beginWave(i) {
+  const w = B.wave, plan = w.plan[i];
+  if (!plan) return;
+  w.idx = i; w.state = 'spawn'; w.spawned = 0; w.killed = 0;
+  const iv = clamp(0.30 - state.stage * 0.004, 0.14, 0.30);
+  const q = [];
+  if (plan.boss) {
+    q.push({ t: 0.1, boss: true });
+    for (let k = 0; k < plan.count; k++) q.push({ t: 1.2 + k * iv * 1.5 });
+  } else {
+    for (let k = 0; k < plan.count; k++) q.push({ t: k * iv });
+  }
+  w.spawnQ = q;
+  w.totalCount = plan.count + (plan.boss ? 1 : 0);
+  showWaveBanner(i + 1, w.total, !!plan.boss);
+  updateHud();
+}
+function updateWave(dt) {
+  if (B.mode !== 'stage' || B.breakT > 0) return;
+  const w = B.wave;
+  if (w.state === 'intro') {
+    w.timer -= dt;
+    if (w.timer <= 0) beginWave(0);
+    return;
+  }
+  if (w.state === 'spawn') {
+    for (let i = w.spawnQ.length - 1; i >= 0; i--) {
+      w.spawnQ[i].t -= dt;
+      if (w.spawnQ[i].t <= 0) { spawnOne(w.spawnQ[i]); w.spawnQ.splice(i, 1); }
+    }
+    if (!w.spawnQ.length) w.state = 'fight';
+  }
+  if (w.state === 'rest') {
+    w.timer -= dt;
+    if (w.timer <= 0) {
+      if (w.idx + 1 < w.total) beginWave(w.idx + 1);
+      else advanceStage();
+    }
+    return;
+  }
+  if ((w.state === 'spawn' || w.state === 'fight') && !w.spawnQ.length && !B.enemies.length) {
+    w.state = 'rest'; w.timer = w.idx + 1 >= w.total ? 0.9 : 1.5;
+    WALL.hp = Math.min(WALL.max, WALL.hp + WALL.max * 0.05);
+    if (w.idx + 1 < w.total) sfx('clear', 0.4);
+    updateHud();
+  }
+}
+function advanceStage() {
+  state.stage++;
+  state.best = Math.max(state.best, state.stage);
+  B.stageFlash = 0.6;
+  B.bgKick = 1;
+  WALL.hp = Math.min(WALL.max, WALL.hp + WALL.max * 0.22);
+  party.forEach(p => { if (!p.down) p.hp = Math.min(p.maxHp, p.hp + p.maxHp * 0.45); });
+  showStageClear(state.stage);
+  Audio2.play('clear');
+  updateHud(); save();
+  startStage(state.stage, false);
+}
+
+/* ---------- wall ---------- */
+function wallBreak() {
+  if (B.breakT > 0 || B.mode !== 'stage') return;
+  B.breakT = 3.1;
+  WALL.hp = 0;
+  WALL.glow = 1; WALL.shake = 16;
+  B.shake = 22;
+  B.wave.spawnQ.length = 0;
+  const el = $('#breakBanner');
+  if (el) {
+    el.classList.remove('on'); void el.offsetWidth; el.classList.add('on');
+    clearTimeout(el._t);
+    el._t = setTimeout(() => el.classList.remove('on'), 2400);
+  }
+  Audio2.play('fail');
+  toast('방어선 붕괴! 전열 재정비…');
+  B.hitStop = 0.12;
+  updateHud();
+}
+function retryStage() {
+  B.enemies.length = 0;
+  B.projs.length = 0;
+  B.pending.length = 0;
+  B.boss = null;
+  $('#bossWrap').classList.remove('on');
+  WALL.hp = WALL.max;
+  party.forEach(p => { p.down = 0; p.hurt = 0; p.anim = 0; p.hp = Math.max(p.hp, p.maxHp * 0.7); });
+  B.wave.state = 'intro';
+  B.wave.idx = -1;
+  B.wave.timer = 1.3;
+  B.wave.spawnQ = [];
+  B.wave.spawned = 0; B.wave.killed = 0;
+  addFx({ type: 'ring', x: WALL.x * 0.6, y: WALL.top, r0: 12, r1: 260, life: 0.9, max: 0.9, color: '150,210,255' });
+  toast('전열 재정비 완료 · 스테이지 재도전');
+  updateHud(); save();
+}
+
 /* ---------- damage ---------- */
-function hitEnemy(dmg, opt) {
-  const e = B.enemy;
-  if (!e || e.dying) return;
+function hitEnemy(e, dmg, opt) {
+  if (!e || e.dying > 0 || e.hp <= 0) return;
   opt = opt || {};
   const crit = !!opt.crit;
   const real = Math.max(1, Math.round(dmg));
   e.hp -= real;
-  e.hurt = crit ? 0.09 : 0.045;
-  B.combo++; B.comboT = 1.35;
-  addNum(e.x + rnd(-6, 6), e.y - spriteH(e) * 0.62, real, crit ? 'crit' : 'dmg');
+  e.hurt = Math.max(e.hurt, crit ? 0.2 : 0.15);
+  B.combo++; B.comboT = 1.4;
+  addNum(e.x + rnd(-6, 6), e.y - enemyH(e) * 0.70, real, crit ? 'crit' : opt.small ? 'mini' : 'dmg');
   if (crit) {
-    Audio2.play('crit');
-    spark(e.x, e.y - spriteH(e) * 0.5, 9, '#ffe066', 320);
-    B.shake = Math.max(B.shake, 7);
-    B.hitStop = Math.max(B.hitStop, 0.045);
+    sfx('crit', 0.08);
+    spark(e.x, e.y - enemyH(e) * 0.5, 8, '#ffe066', 320);
+    B.shake = Math.max(B.shake, 5.5);
+    if (opt.heavy) B.hitStop = Math.max(B.hitStop, 0.05);
   } else {
-    Audio2.play(opt.sfx || 'hit');
-    spark(e.x, e.y - spriteH(e) * 0.5, 4, opt.color || '#fff0b8', 190);
-    B.shake = Math.max(B.shake, 2.2);
+    const base = opt.sfx || 'hit';
+    sfx(base, 0.055);
+    spark(e.x, e.y - enemyH(e) * 0.5, opt.small ? 2 : 4, opt.color || '#fff0b8', opt.small ? 120 : 180);
+    B.shake = Math.max(B.shake, 1.4);
   }
-  if (e.boss) $('#bossFill').style.width = clamp(e.hp / e.maxHp, 0, 1) * 100 + '%';
-  if (e.hp <= 0) killEnemy();
+  if (B.boss === e) $('#bossFill').style.width = clamp(e.hp / e.maxHp, 0, 1) * 100 + '%';
+  if (e.hp <= 0) killEnemy(e);
 }
-function spriteH(e) {
-  const base = heroH;
-  if (e.isDgn && !e.boss) return base * 0.86;
-  return base * (e.boss ? 1.02 : 1.04) * e.scale;
-}
-function killEnemy() {
-  const e = B.enemy;
-  if (!e || e.dying) return;
-  e.dying = 0.52;
+function killEnemy(e) {
+  if (!e || e.dying > 0) return;
+  e.dying = 0.55;
   e.hp = 0;
-  spark(e.x, e.y - spriteH(e) * 0.5, e.boss ? 26 : 14, e.boss ? '#ffd98a' : '#ffffff', e.boss ? 420 : 300);
-  addFx({ type: 'ring', x: e.x, y: e.y - spriteH(e) * 0.4, r0: 10, r1: e.boss ? 150 : 80, life: 0.5, max: 0.5, color: e.boss ? '255,215,140' : '255,255,255' });
-  $('#bossWrap').classList.remove('on');
-  onEnemyKilled(e);
+  const h = enemyH(e);
+  spark(e.x, e.y - h * 0.5, e.boss ? 30 : 10, e.boss ? '#ffd98a' : '#ffffff', e.boss ? 430 : 260);
+  addFx({
+    type: 'ring', x: e.x, y: e.y - h * 0.35, r0: 8, r1: e.boss ? 170 : 62,
+    life: 0.5, max: 0.5, color: e.boss ? '255,215,140' : '255,255,255'
+  });
+  if (e.boss) {
+    B.boss = null;
+    $('#bossWrap').classList.remove('on');
+    B.shake = 16;
+    B.hitStop = 0.1;
+  }
+  onKill(e);
 }
-
-function onEnemyKilled(e) {
-  const st = state.stage;
+function onKill(e) {
   if (B.mode === 'dungeon') { dgnKill(e); return; }
+  const st = state.stage;
   state.stats.kills++;
-  let gold = Math.round(goldPerKill(st) * (e.boss ? 22 : 1));
-  state.gold += gold; state.stats.gold += gold;
-  addNum(e.x, e.y - spriteH(e) * 0.9, gold, 'gold');
-  if (Math.random() < 0.10) {
+  let gold = Math.round(goldPerKill(st) * (e.boss ? 20 : 1));
+  state.gold += gold;
+  state.stats.gold += gold;
+  addNum(e.x, e.y - enemyH(e) * 0.95, gold, 'gold');
+  if (Math.random() < 0.09) {
     const d = 2 + Math.floor(st / 5);
-    state.dia += d; addNum(e.x + 20, e.y - spriteH(e) * 0.9 - 18, d, 'dia');
+    state.dia += d;
+    addNum(e.x + 18, e.y - enemyH(e) * 0.95 - 16, d, 'dia');
   }
   if (e.boss) {
     state.stats.boss++;
     const dg = 60 + st * 4;
     state.dia += dg;
-    setTimeout(() => toast('👑 보스 처치! 다이아 +' + fmtFull(dg)), 300);
-    B.shake = 16;
-    setTimeout(() => cutin({ who: 'BOSS DOWN', name: '승리의 함성!', ico: '🏆', c1: 'rgba(120,80,10,.9)', c2: 'rgba(255,200,90,.9)' }), 180);
+    setTimeout(() => toast('👑 보스 처치! 다이아 +' + fmtFull(dg)), 260);
+    setTimeout(() => cutin({ who: 'BOSS DOWN', name: '방어 성공!', ico: '🏆', c1: 'rgba(120,80,10,.9)', c2: 'rgba(255,200,90,.9)' }), 180);
     Audio2.play('legend');
   }
-  if (!e.boss) {
-    state.kills++;
-    if (state.kills >= KILLS_PER_STAGE) {
-      state.kills = 0;
-      advanceStage();
-    }
-  } else {
-    state.kills = 0;
-    advanceStage();
-  }
+  sfx('coin', 0.14);
   updateHud();
-  save();
-}
-function advanceStage() {
-  state.stage++;
-  state.best = Math.max(state.best, state.stage);
-  B.stageFlash = 0.55;
-  B.bgKick = 1;
-  party.forEach(p => { if (!p.down) p.hp = Math.min(p.maxHp, p.hp + p.maxHp * 0.22); });
-  showStageClear(state.stage);
-  Audio2.play('clear');
-  updateHud(); save();
-  B.spawnT = 0.85;
 }
 
-/* ---------- party actions ---------- */
+/* ---------- enemy → wall ---------- */
+function enemyHitWall(e) {
+  at(0.14, () => {
+    if (e.dying > 0) return;
+    const def = Math.min(70, wallDefPct());
+    let dmg = e.atk * rnd(0.9, 1.15) * (e.boss ? 1.7 : 1) * (1 - def / 100);
+    dmg = Math.max(1, Math.round(dmg));
+    if (B.mode === 'dungeon') dmg = Math.round(dmg * 0.55);
+    const floor = B.mode === 'dungeon' ? 1 : 0;
+    WALL.hp = Math.max(floor, WALL.hp - dmg);
+    WALL.glow = 1;
+    WALL.shake = Math.min(9, 2.4 + dmg * 0.10);
+    B.shake = Math.max(B.shake, e.boss ? 7 : 2.0);
+    sfx('hit', 0.075);
+    const py = WALL.top + WALL.h * rnd(0.35, 0.95);
+    spark(WALL.x + 2, py, e.boss ? 12 : 4, '#ffd0a0', 170);
+    if (Math.random() < 0.4) addNum(WALL.x + 10, py, dmg, 'wall');
+    if (WALL.hp <= 0 && B.mode === 'stage') wallBreak();
+    updateHud();
+  });
+}
+function throwAtParty(e) {
+  const alive = party.filter(p => !p.down);
+  if (!alive.length) return;
+  const target = pick(alive);
+  e.anim = 1;
+  const sx = e.x - 6, sy = e.y - enemyH(e) * 0.72;
+  const tx = target.x, ty = target.y - target.hh * 0.6;
+  B.projs.push({
+    type: 'enemy', sx, sy, tx, ty, x: sx, y: sy, target,
+    t: 0, dur: Math.max(0.4, Math.hypot(tx - sx, ty - sy) / 520),
+    dmg: Math.round(e.atk * 1.5), spr: e.spr, color: e.spr === 'mob_dragon' ? '#ff8a4d' : '#c9d6ea'
+  });
+  sfx('arrow', 0.12);
+}
+
+/* ---------- party combat ---------- */
 function partyAttack(p) {
-  const e = B.enemy;
-  if (!e || e.dying || p.down) return;
-  p.anim = 1;
+  if (p.down > 0) return;
   const st = heroStats();
-  const dmgBase = st.atk * p.mult * rnd(0.92, 1.1);
   const critOK = Math.random() * 100 < st.crit;
   const crit = critOK ? st.cdmg / 100 : 1;
-  const mult = crit * (p.buff > 0 ? 1.12 : 1);
+  p.anim = 1;
+  p.animDur = p.key === 'knight' ? 0.36 : p.key === 'archer' ? 0.26 : p.key === 'mage' ? 0.42 : 0.34;
 
   if (p.key === 'knight') {
-    addFx({ type: 'slash', x: e.x - 26, y: e.y - heroH * 0.5, a: -0.5, len: 90, life: 0.22, max: 0.22, color: '#cfe4ff', w: 9 });
-    for (let i = 0; i < p.hits; i++) {
-      at(i * 0.09, () => hitEnemy(dmgBase * mult, { crit: i === 0 && critOK, sfx: 'hit' }));
-    }
-    B.hitStop = Math.max(B.hitStop, 0.02);
+    const near = aliveEnemies().filter(e => e.x < WALL.x + 210).sort((a, b) => a.x - b.x).slice(0, 2);
+    if (!near.length) { p.anim = 0; return; }
+    const tgt = near[0];
+    addFx({
+      type: 'slash', x: tgt.x - 14, y: tgt.y - enemyH(tgt) * 0.55,
+      a: -0.55, len: 78, life: 0.24, max: 0.24, color: '#d6e9ff', w: 9
+    });
+    near.forEach((e, i) => at(i * 0.08, () => {
+      hitEnemy(e, st.atk * p.mult * rnd(0.92, 1.1) * (i ? 0.55 : 1) * crit, {
+        crit: i === 0 && critOK, sfx: 'hit', color: '#d6e9ff', height: 0
+      });
+    }));
+    B.hitStop = Math.max(B.hitStop, 0.018);
   } else if (p.key === 'archer') {
-    for (let i = 0; i < p.hits; i++) {
-      at(i * 0.07, () => fireProjectile('arrow', p, dmgBase * mult, { crit: i === 0 && critOK }));
-    }
+    const targets = frontEnemies(3);
+    if (!targets.length) { p.anim = 0; return; }
+    targets.forEach((e, i) => at(i * 0.055, () => fireProjectile('arrow', p, st.atk * p.mult * rnd(0.92, 1.1) * crit, { target: e, crit: i === 0 && critOK })));
   } else if (p.key === 'mage') {
-    fireProjectile('fire', p, dmgBase, { crit: critOK, hits: p.hits, mult });
+    const tgt = frontEnemies(1)[0];
+    if (!tgt) { p.anim = 0; return; }
+    fireProjectile('fire', p, st.atk * p.mult * rnd(0.92, 1.1) * crit, { target: tgt, crit: critOK, splash: 105, splashDmg: 0.52 });
   } else {
-    for (let i = 0; i < p.hits; i++) {
-      at(i * 0.1, () => fireProjectile('holy', p, dmgBase * mult, { crit: i === 0 && critOK }));
-    }
+    const targets = frontEnemies(2);
+    if (!targets.length) { p.anim = 0; return; }
+    targets.forEach((e, i) => at(i * 0.07, () => fireProjectile('holy', p, st.atk * p.mult * rnd(0.92, 1.1) * crit, { target: e, crit: i === 0 && critOK })));
   }
 }
 function fireProjectile(type, p, dmg, opt) {
   opt = opt || {};
-  const e = B.enemy;
-  if (!e || e.dying) return;
-  const sx = p.x + heroH * 0.18, sy = (p.y || groundY) - heroH * 0.52;
-  const tx = e.x, ty = e.y - spriteH(e) * 0.5;
-  const spd = type === 'arrow' ? 1500 : type === 'holy' ? 900 : 620;
+  const e = opt.target;
+  if (!e || e.dying > 0) return;
+  const sx = p.x + p.hh * 0.22, sy = p.y - p.hh * 0.58;
+  const tx = e.x, ty = e.y - enemyH(e) * 0.55;
+  const spd = type === 'arrow' ? 1450 : type === 'holy' ? 880 : 600;
   B.projs.push({
-    type, sx, sy, tx, ty, x: sx, y: sy, dmg, crit: !!opt.crit, hits: opt.hits || 1, mult: opt.mult || 1,
-    t: 0, dur: Math.max(0.12, Math.hypot(tx - sx, ty - sy) / spd), color: type === 'arrow' ? '#b6ff9e' : type === 'holy' ? '#ffe6a0' : '#ff9a4d'
+    type, sx, sy, tx, ty, x: sx, y: sy, dmg, crit: !!opt.crit, target: e,
+    splash: opt.splash || 0, splashDmg: opt.splashDmg || 0.5,
+    t: 0, dur: Math.max(0.1, Math.hypot(tx - sx, ty - sy) / spd),
+    color: type === 'arrow' ? '#b6ff9e' : type === 'holy' ? '#ffe6a0' : '#ff9a4d'
   });
-  Audio2.play(type === 'arrow' ? 'arrow' : type === 'holy' ? 'holy' : 'fire');
+  sfx(type === 'arrow' ? 'arrow' : type === 'holy' ? 'holy' : 'fire', 0.05);
 }
 function projectileArrive(pr) {
-  const e = B.enemy;
-  if (!e || e.dying) return;
-  if (pr.type === 'fire') {
-    addFx({ type: 'ring', x: e.x, y: e.y - spriteH(e) * 0.45, r0: 8, r1: 84, life: 0.34, max: 0.34, color: '255,140,60' });
-    spark(e.x, e.y - spriteH(e) * 0.45, 14, '#ffb066', 300);
-    for (let i = 0; i < (pr.hits || 3); i++) {
-      at(i * 0.055, () => hitEnemy(pr.dmg * pr.mult * rnd(0.95, 1.06), { crit: i === 0 && pr.crit, sfx: 'fire', color: '#ff9a4d' }));
-    }
-  } else {
-    addFx({ type: 'spark', x: e.x, y: e.y - spriteH(e) * 0.5, life: 0.16, max: 0.16, color: pr.type === 'holy' ? '255,230,160' : '180,255,150' });
-    hitEnemy(pr.dmg, { crit: pr.crit, sfx: pr.type === 'holy' ? 'holy' : 'arrow', color: pr.type === 'holy' ? '#ffe6a0' : '#c8ffa8' });
+  const e = pr.target;
+  if (pr.splash) {
+    const cx = e && e.dying <= 0 ? e.x : pr.tx;
+    const cy = e && e.dying <= 0 ? e.y : pr.ty;
+    addFx({ type: 'ring', x: cx, y: cy - 20, r0: 8, r1: pr.splash, life: 0.36, max: 0.36, color: '255,140,60' });
+    spark(cx, cy - 30, 16, '#ffb066', 300);
+    const list = aliveEnemies().filter(q => Math.hypot(q.x - cx, q.y - cy) < pr.splash);
+    list.forEach((q, i) => at(i * 0.02, () => hitEnemy(q, pr.dmg * pr.splashDmg, { crit: i === 0 && pr.crit, sfx: 'fire', color: '#ff9a4d', small: i > 0 })));
+    B.shake = Math.max(B.shake, 2.4);
+    return;
   }
+  if (!e || e.dying > 0) return;
+  addFx({
+    type: 'spark', x: e.x, y: e.y - enemyH(e) * 0.5, life: 0.16, max: 0.16,
+    color: pr.type === 'holy' ? '255,230,160' : '180,255,150'
+  });
+  hitEnemy(e, pr.dmg, {
+    crit: pr.crit, sfx: pr.type === 'holy' ? 'holy' : 'arrow',
+    color: pr.type === 'holy' ? '#ffe6a0' : '#c8ffa8'
+  });
 }
 
-/* ultimate skill with cut-in */
-function castUltimate(p) {
-  const e = B.enemy;
-  if (!e || e.dying || p.down) return;
+/* ---------- signature AoE ---------- */
+function shieldBash(big) {
   const st = heroStats();
-  const mult = (1.6 + st.skill.mult * 1.3) * rnd(0.95, 1.1);
-  p.anim = 1;
-  B.hitStop = Math.max(B.hitStop, 0.09);
-  B.shake = Math.max(B.shake, 12);
-  cutin({ who: p.name, name: p.skill, ico: p.icon, c1: 'rgba(8,12,24,.9)', c2: p.c2 });
-  setTimeout(() => Audio2.play('skill'), 60);
-
-  if (p.key === 'knight') {
-    addFx({ type: 'beam', x1: p.x + 40, y1: groundY - heroH * 0.6, x2: e.x, y2: groundY - heroH * 0.45, life: 0.55, max: 0.55, color: '200,230,255', w: 26 });
-    for (let i = 0; i < 6; i++) at(0.08 * i, () => hitEnemy(st.atk * mult * 0.9, { crit: Math.random() * 100 < st.crit + 20, sfx: 'hit', color: '#d6e9ff' }));
-    at(0.52, () => { spark(e.x, e.y - heroH * 0.5, 22, '#ffffff', 420); B.shake = 14; });
-  } else if (p.key === 'archer') {
-    for (let i = 0; i < 8; i++) at(0.055 * i, () => fireProjectile('arrow', p, st.atk * mult * 0.52, { crit: Math.random() < 0.35 }));
-    B.shake = 8;
-  } else if (p.key === 'mage') {
-    addFx({ type: 'meteor', x: e.x + 40, y: groundY, life: 0.75, max: 0.75 });
-    at(0.34, () => {
-      addFx({ type: 'ring', x: e.x, y: groundY - 10, r0: 20, r1: 210, life: 0.55, max: 0.55, color: '255,170,80' });
-      spark(e.x, groundY - 20, 30, '#ffb066', 480);
-      B.shake = 18;
-      for (let i = 0; i < 7; i++) hitEnemy(st.atk * mult * 0.72, { crit: Math.random() * 100 < st.crit + 15, sfx: 'fire', color: '#ffb066' });
+  const range = big ? W + 200 : 300 * st.knock;
+  const list = aliveEnemies().filter(e => e.x < WALL.x + range);
+  if (!list.length) return false;
+  const push = (big ? 880 : 520) * st.knock;
+  list.forEach((e, i) => {
+    e.kb = push * rnd(0.85, 1.1);
+    e.kbT = 0;
+    e.state = 'walk';
+    at(i * 0.012, () => hitEnemy(e, st.atk * (big ? 1.55 : 0.55) * rnd(0.9, 1.1), {
+      crit: Math.random() * 100 < st.crit * 0.5, sfx: 'hit', color: '#cfe4ff', small: !big ? list.length > 4 : false
+    }));
+  });
+  addFx({ type: 'rush', x: WALL.x + 20, y: WALL.top + WALL.h * 0.62, life: 0.5, max: 0.5, w: big ? 42 : 26 });
+  spark(WALL.x + 30, WALL.top + WALL.h * 0.7, big ? 26 : 14, '#cfe4ff', big ? 420 : 260);
+  B.shake = Math.max(B.shake, big ? 18 : 9);
+  B.hitStop = Math.max(B.hitStop, big ? 0.09 : 0.03);
+  sfx('skill', big ? 0.3 : 0.5);
+  return true;
+}
+function arrowRain(big) {
+  const st = heroStats();
+  const c = densest(big ? 240 : 190) || frontEnemies(1)[0];
+  if (!c) return false;
+  const R = big ? 260 : 170;
+  const ticks = big ? 3 : 1;
+  for (let t = 0; t < ticks; t++) {
+    at(t * 0.16, () => {
+      const cx = c.x !== undefined ? c.x : 0;
+      const list = aliveEnemies().filter(q => Math.abs(q.x - cx) < R);
+      for (let i = 0; i < (big ? 10 : 6); i++) B.parts.push({
+        x: cx + rnd(-R * 0.8, R * 0.8), y: c.y - 240 - rnd(0, 90),
+        vx: rnd(-20, 20), vy: rnd(520, 700), life: 0.42, max: 0.42,
+        r: rnd(1.4, 2.6), color: '#c8ffa8', grav: 900
+      });
+      list.forEach((q, i) => at(i * 0.014, () => hitEnemy(q, st.atk * (big ? 0.58 : 0.34) * rnd(0.9, 1.12), {
+        crit: Math.random() * 100 < st.crit, sfx: 'arrow', color: '#c8ffa8', small: true
+      })));
+      addFx({ type: 'ring', x: cx, y: c.y - 30, r0: 10, r1: R * 0.9, life: 0.3, max: 0.3, color: '190,255,170' });
+      sfx('arrow', 0.05);
     });
+  }
+  B.shake = Math.max(B.shake, big ? 12 : 5);
+  return true;
+}
+function fireBurst(big) {
+  const st = heroStats();
+  const c = densest(big ? 220 : 170) || frontEnemies(1)[0];
+  if (!c) return false;
+  const R = big ? 250 : 150;
+  if (big) addFx({ type: 'meteor', x: c.x, y: c.y, life: 0.8, max: 0.8 });
+  const delay = big ? 0.34 : 0.05;
+  at(delay, () => {
+    addFx({ type: 'ring', x: c.x, y: c.y - 10, r0: 14, r1: R, life: 0.5, max: 0.5, color: '255,170,80' });
+    spark(c.x, c.y - 20, big ? 30 : 14, '#ffb066', big ? 460 : 300);
+    const list = aliveEnemies().filter(q => Math.hypot(q.x - c.x, q.y - c.y) < R);
+    for (let k = 0; k < (big ? 4 : 2); k++) {
+      at(k * 0.07, () => {
+        list.forEach((q, i) => { if (q.dying <= 0) hitEnemy(q, st.atk * (big ? 0.62 : 0.40) * rnd(0.9, 1.1), { crit: Math.random() * 100 < st.crit * 0.7, sfx: 'fire', color: '#ffb066', small: true }); });
+      });
+    }
+    B.shake = Math.max(B.shake, big ? 18 : 7);
+    sfx('fire', 0.2);
+  });
+  return true;
+}
+function healPulse(big) {
+  const st = heroStats();
+  party.forEach(q => {
+    if (q.down) return;
+    const heal = Math.round(q.maxHp * (big ? 0.34 : 0.10));
+    if (q.hp < q.maxHp) {
+      q.hp = Math.min(q.maxHp, q.hp + heal);
+      if (big || Math.random() < 0.45) addNum(q.x, q.y - q.hh * 0.95, heal, 'heal');
+    }
+    q.healGlow = big ? 1 : 0.55;
+  });
+  const wr = Math.round(WALL.max * (big ? 0.10 : 0.03));
+  if (WALL.hp < WALL.max) {
+    WALL.hp = Math.min(WALL.max, WALL.hp + wr);
+    addNum(WALL.x * 0.55, WALL.top - 12, wr, 'heal');
+  }
+  addFx({ type: 'ring', x: party[3].x, y: party[3].y - 6, r0: 6, r1: big ? 200 : 90, life: 0.6, max: 0.6, color: '255,225,150' });
+  if (big) {
+    addFx({ type: 'holyaura', x: party[3].x, y: party[3].y - party[3].hh * 0.5, life: 1.0, max: 1.0 });
+    sfx('levelup', 0.3);
+  }
+  return true;
+}
+function castSignature(p) {
+  const st = heroStats();
+  if (p.key === 'knight') {
+    if (aliveEnemies().filter(e => e.x < WALL.x + 300).length >= 2) shieldBash(false);
+  } else if (p.key === 'archer') {
+    if (aliveEnemies().length >= 3) arrowRain(false);
+  } else if (p.key === 'mage') {
+    if (aliveEnemies().length >= 3) fireBurst(false);
   } else {
-    party.forEach(q => { if (!q.down) { q.hp = Math.min(q.maxHp, q.hp + q.maxHp * 0.30); q.healGlow = 0.8; addNum(q.x, q.y - heroH * 0.95, Math.round(q.maxHp * 0.3), 'heal'); } });
-    addFx({ type: 'holyaura', x: p.x, y: groundY - heroH * 0.5, life: 0.9, max: 0.9 });
-    for (let i = 0; i < 5; i++) at(0.07 * i, () => hitEnemy(st.atk * mult * 0.55, { crit: false, sfx: 'holy', color: '#ffe6a0' }));
-    Audio2.play('levelup');
+    healPulse(false);
+  }
+}
+function castUltimate(p) {
+  if (p.down > 0) return;
+  const st = heroStats();
+  const foes = aliveEnemies();
+  if (!foes.length) return;
+  p.anim = 1;
+  p.animDur = 0.6;
+  const name = p.ult || p.skill;
+  cutin({ who: p.name, name, ico: p.icon, c1: 'rgba(8,12,24,.9)', c2: p.c2 });
+  B.hitStop = Math.max(B.hitStop, 0.07);
+  setTimeout(() => Audio2.play('skill'), 60);
+  const mult = 1 + st.skill.mult * 0.55;
+  if (p.key === 'knight') {
+    at(0.16, () => shieldBash(true));
+  } else if (p.key === 'archer') {
+    at(0.18, () => { arrowRain(true); });
+  } else if (p.key === 'mage') {
+    at(0.16, () => { fireBurst(true); });
+  } else {
+    at(0.16, () => {
+      healPulse(true);
+      const list = aliveEnemies().filter(e => e.x < WALL.x + 330);
+      list.forEach((q, i) => at(i * 0.02, () => hitEnemy(q, st.atk * 0.75 * mult, { crit: Math.random() * 100 < st.crit, sfx: 'holy', color: '#ffe6a0', small: true })));
+      addFx({ type: 'ring', x: WALL.x, y: WALL.top + WALL.h * 0.4, r0: 10, r1: 330, life: 0.7, max: 0.7, color: '255,235,170' });
+    });
   }
 }
 function cutin(o) {
@@ -1222,60 +1652,80 @@ function startDungeon(type) {
   if (d <= 0) { toast('오늘 입장 횟수를 모두 사용했습니다'); return; }
   state.dgn[type]--;
   B.mode = 'dungeon';
-  B.dgn = { type, left: DUNGEONS[type].time, gold: 0, dia: 0, kills: 0, boss: null };
-  B.queue.length = 0;
+  B.dgn = { type, left: DUNGEONS[type].time, gold: 0, dia: 0, kills: 0, spawnT: 0.4, boss: null };
+  B.enemies.length = 0;
+  B.projs.length = 0;
+  B.pending.length = 0;
+  B.boss = null;
+  B.breakT = 0;
+  B.wave.state = 'idle';
   $('#dgnTimer').classList.add('on');
   $('#bossWrap').classList.remove('on');
-  party.forEach(p => { p.hp = p.maxHp; p.down = 0; p.atkT = rnd(0.2, 0.9); });
+  party.forEach(p => { p.hp = p.maxHp; p.down = 0; p.hurt = 0; p.atkT = rnd(0.2, 0.9); });
+  WALL.hp = Math.max(WALL.hp, WALL.max * 0.6);
   if (type === 'promote') {
     const st = heroStats();
-    B.enemy = makeEnemy({ spr: 'mob_darkknight', boss: true, name: '시련의 기사', hp: Math.max(600, st.dps * 19), atk: enemyAtk(state.stage) * 1.3, isDgn: true });
-    B.enemy.scale = 1.35;
+    const e = makeEnemy({
+      spr: 'mob_darkknight', boss: true, name: '시련의 기사',
+      hp: Math.max(700, st.dps * 15), atk: enemyAtk(state.stage) * 1.2, isDgn: true, depth: 0.5, x: W * 0.78
+    });
+    e.stopX = WALL.x + enemyH(e) * 0.30;
+    B.enemies.push(e);
+    B.boss = e; B.dgn.boss = e;
     $('#bossName').textContent = '시련의 기사';
     $('#bossWrap').classList.add('on');
     Audio2.play('boss');
-  } else {
-    spawnDgnEnemy();
   }
-  cutin({ who: 'DUNGEON', name: DUNGEONS[type].name, ico: DUNGEONS[type].icon, c1: 'rgba(10,16,30,.92)', c2: type === 'gold' ? 'rgba(200,150,40,.9)' : type === 'dia' ? 'rgba(60,150,220,.9)' : 'rgba(180,60,60,.9)' });
+  cutin({
+    who: 'DUNGEON', name: DUNGEONS[type].name, ico: DUNGEONS[type].icon,
+    c1: 'rgba(10,16,30,.92)',
+    c2: type === 'gold' ? 'rgba(200,150,40,.9)' : type === 'dia' ? 'rgba(60,150,220,.9)' : 'rgba(180,60,60,.9)'
+  });
   toast(DUNGEONS[type].name + ' 입장!');
   updateHud(); save(); renderTab();
 }
 function spawnDgnEnemy() {
-  if (B.mode !== 'dungeon' || !B.dgn) return;
-  if (B.dgn.type === 'gold') {
-    B.enemy = makeEnemy({ spr: 'mob_slime', isDgn: true, gold: Math.round(goldPerKill(state.stage) * 8), scale: 0.9, hp: enemyHp(state.stage) * 1.15, name: '황금 슬라임', tint: 'gold' });
-  } else if (B.dgn.type === 'dia') {
-    B.enemy = makeEnemy({ spr: 'mob_slime', isDgn: true, dia: 2 + Math.floor(state.stage / 8), scale: 0.9, hp: enemyHp(state.stage) * 1.3, name: '수정 골렘', tint: 'crystal' });
+  const t = B.dgn.type;
+  const st = state.stage;
+  let e;
+  if (t === 'gold') {
+    e = makeEnemy({
+      spr: 'mob_slime', isDgn: true, name: '황금 슬라임',
+      hp: enemyHp(st) * 1.1, scale: 0.95, tint: 'gold',
+      gold: Math.round(goldPerKill(st) * 9), spd: 66
+    });
+  } else {
+    e = makeEnemy({
+      spr: 'mob_slime', isDgn: true, name: '수정 골렘',
+      hp: enemyHp(st) * 1.25, scale: 0.95, tint: 'crystal',
+      dia: 2 + Math.floor(st / 8), spd: 66
+    });
   }
+  B.enemies.push(e);
 }
 function dgnKill(e) {
   if (!B.dgn) return;
   B.dgn.kills++;
-  if (B.dgn.type === 'gold') {
-    const g = e.gold || Math.round(goldPerKill(state.stage) * 7);
-    B.dgn.gold += g;
-    state.gold += g; state.stats.gold += g;
-    addNum(e.x, e.y - 60, g, 'gold');
-    Audio2.play('coin');
-    B.spawnT = 0.3;
-  } else if (B.dgn.type === 'dia') {
-    const d = e.dia || 2;
-    B.dgn.dia += d;
-    state.dia += d;
-    addNum(e.x, e.y - 60, d, 'dia');
-    Audio2.play('coin');
-    B.spawnT = 0.32;
-  } else if (B.dgn.type === 'promote') {
-    endDungeon(true);
+  if (e.gold) {
+    B.dgn.gold += e.gold; state.gold += e.gold; state.stats.gold += e.gold;
+    addNum(e.x, e.y - 60, e.gold, 'gold');
+  } else if (e.dia) {
+    B.dgn.dia += e.dia; state.dia += e.dia;
+    addNum(e.x, e.y - 60, e.dia, 'dia');
   }
+  if (B.dgn.type === 'promote') { endDungeon(true); return; }
+  sfx('coin', 0.12);
   updateHud();
 }
 function endDungeon(success) {
   if (!B.dgn) return;
   const d = B.dgn;
-  B.mode = 'stage'; B.dgn = null;
-  B.enemy = null; B.queue.length = 0;
+  B.mode = 'stage';
+  B.dgn = null;
+  B.enemies.length = 0;
+  B.projs.length = 0;
+  B.boss = null;
+  WALL.hp = WALL.max;
   $('#dgnTimer').classList.remove('on');
   $('#bossWrap').classList.remove('on');
   if (d.type === 'gold' && success) state.stats.dungeonGold = (state.stats.dungeonGold || 0) + 1;
@@ -1300,130 +1750,107 @@ function endDungeon(success) {
     buttons: [{ label: '확인', primary: true }]
   });
   Audio2.play(success ? 'clear' : 'fail');
-  B.spawnT = 1.2;
+  startStage(state.stage, false);
   updateHud(); save(); renderTab();
 }
 
-/* ---------- update ---------- */
+/* ============================================================
+   UPDATE
+   ============================================================ */
 function updateBattle(dt) {
   B.t += dt;
-  // pending timers
   for (let i = B.pending.length - 1; i >= 0; i--) {
     B.pending[i].t -= dt;
-    if (B.pending[i].t <= 0) { const fn = B.pending[i].fn; B.pending.splice(i, 1); try { fn(); } catch (e) { console.warn(e); } }
+    if (B.pending[i].t <= 0) {
+      const fn = B.pending[i].fn;
+      B.pending.splice(i, 1);
+      try { fn(); } catch (err) { console.warn(err); }
+    }
   }
-  // hit stop freezes combat motion briefly for punch
-  if (B.hitStop > 0) { B.hitStop -= dt; dt *= 0.15; }
+  if (B.hitStop > 0) { B.hitStop -= dt; dt *= 0.18; }
   B.shake *= Math.pow(0.0025, dt);
   if (B.shake < 0.2) B.shake = 0;
-  B.sx = rnd(-1, 1) * B.shake; B.sy = rnd(-1, 1) * B.shake;
+  B.sx = rnd(-1, 1) * B.shake;
+  B.sy = rnd(-1, 1) * B.shake;
   B.stageFlash = Math.max(0, B.stageFlash - dt * 1.6);
   if (B.bgKick > 0) B.bgKick = Math.max(0, B.bgKick - dt * 1.3);
   B.comboT -= dt;
   if (B.comboT <= 0) B.combo = 0;
-  B.ultT -= dt;
+  WALL.glow = Math.max(0, WALL.glow - dt * 2.4);
+  WALL.shake = Math.max(0, WALL.shake - dt * 26);
+  WALL.torch += dt;
 
-  // dungeon timer
+  if (B.breakT > 0) {
+    B.breakT -= dt;
+    if (B.breakT <= 0) retryStage();
+  }
+
   if (B.mode === 'dungeon' && B.dgn) {
     B.dgn.left -= dt;
     const el = $('#dgnTime');
     if (el) el.textContent = Math.max(0, Math.ceil(B.dgn.left));
-    if (B.dgn.left <= 0) endDungeon(B.dgn.type === 'promote' ? false : true);
-  }
-
-  // stage spawn queue
-  if (!B.enemy && B.spawnT > 0) {
-    B.spawnT -= dt;
-    if (B.spawnT <= 0) {
-      if (B.mode === 'stage') spawnStageEnemy();
-      else if (B.dgn && B.dgn.type !== 'promote') spawnDgnEnemy();
-      B.spawnT = 0;
-    }
-  }
-
-  // enemy logic
-  const e = B.enemy;
-  if (e) {
-    e.spawnT = Math.min(1, e.spawnT + dt * 3);
-    e.hurt = Math.max(0, e.hurt - dt);
-    if (e.dying > 0) {
-      e.dying -= dt;
-      if (e.dying <= 0) {
-        B.enemy = null;
-        if (B.mode === 'stage' && B.spawnT <= 0) B.spawnT = 0.55;
-        else if (B.dgn && B.dgn.type !== 'promote' && B.spawnT <= 0) B.spawnT = 0.2;
-      }
-    } else if (e.hp > 0) {
-      e.anim = Math.max(0, e.anim - dt * 2.2);
-      e.atkT -= dt;
-      if (e.atkT <= 0.42 && e.atkT + dt > 0.42) {
-        // wind up
-        e.anim = 1;
-      }
-      if (e.atkT <= 0) {
-        e.atkT = e.boss ? rnd(3.0, 3.8) : rnd(2.2, 3.0);
-        enemyStrike(e);
+    if (B.dgn.type !== 'promote') {
+      B.dgn.spawnT -= dt;
+      if (B.dgn.spawnT <= 0 && aliveEnemies().length < 12) {
+        B.dgn.spawnT = B.dgn.type === 'gold' ? 0.85 : 1.0;
+        spawnDgnEnemy();
       }
     }
+    if (B.dgn.left <= 0) endDungeon(true);
   }
 
-  // party logic
-  party.forEach(p => {
-    p.anim = Math.max(0, p.anim - dt * 4.2);
-    p.hurt = Math.max(0, p.hurt - dt);
-    p.healGlow = Math.max(0, p.healGlow - dt);
-    if (p.down > 0) {
-      p.down -= dt;
-      if (p.down <= 0) { p.down = 0; p.hp = p.maxHp * 0.5; p.healGlow = 0.9; addNum(p.x, p.y - heroH * 0.9, Math.round(p.maxHp * 0.5), 'heal'); }
-      return;
-    }
-    if (e && !e.dying && e.hp > 0 && e.spawnT > 0.3) {
-      p.atkT -= dt;
-      if (p.atkT <= 0) { p.atkT = p.cd * rnd(0.92, 1.08); partyAttack(p); }
-    }
-    p.ultT -= dt;
-    if (p.ultT <= 0 && e && !e.dying && e.hp > 0 && B.t - (B.lastUlt || 0) > 7.5) {
-      p.ultT = rnd(9, 13);
-      B.lastUlt = B.t;
-      castUltimate(p);
-    }
-  });
+  updateWave(dt);
+  updateEnemies(dt);
+  updateParty(dt);
 
-  // priest passive heal
-  B.healT = (B.healT || 0) + dt;
+  // 성직자 패시브: 파티 + 성벽 회복
+  B.healT += dt;
   if (B.healT >= 3.4) {
     B.healT = 0;
     const pr = party[3];
-    if (pr && !pr.down) {
-      party.forEach(q => {
-        if (!q.down && q.hp < q.maxHp) {
-          const heal = Math.round(q.maxHp * 0.10);
-          q.hp = Math.min(q.maxHp, q.hp + heal);
-          if (Math.random() < 0.5) addNum(q.x, q.y - heroH * 0.9, heal, 'heal');
-        }
-      });
-      addFx({ type: 'ring', x: pr.x, y: groundY - 6, r0: 6, r1: 90, life: 0.5, max: 0.5, color: '255,225,150' });
-    }
+    if (pr && !pr.down) healPulse(false);
   }
 
   // projectiles
   for (let i = B.projs.length - 1; i >= 0; i--) {
     const pr = B.projs[i];
     pr.t += dt;
+    if (pr.type === 'enemy') {
+      const tg = pr.target;
+      if (tg && tg.down <= 0) { pr.tx = tg.x; pr.ty = tg.y - tg.hh * 0.55; }
+      const k = Math.min(1, pr.t / pr.dur);
+      pr.x = lerp(pr.sx, pr.tx, k);
+      pr.y = lerp(pr.sy, pr.ty, k) - Math.sin(k * Math.PI) * 70;
+      if (k >= 1) {
+        B.projs.splice(i, 1);
+        if (tg && tg.down <= 0) {
+          tg.hp -= pr.dmg;
+          tg.hurt = 0.35;
+          addNum(tg.x, tg.y - tg.hh * 0.95, pr.dmg, 'hit');
+          spark(tg.x, tg.y - tg.hh * 0.5, 7, '#ff9a9a', 220);
+          B.shake = Math.max(B.shake, 3);
+          sfx('hit', 0.1);
+          if (tg.hp <= 0) {
+            tg.hp = 0; tg.down = 5;
+            toast(tg.name + ' 쓰러짐! 5초 후 부활합니다');
+          }
+        }
+        continue;
+      }
+      continue;
+    }
+    const e2 = pr.target;
+    if (e2 && e2.dying <= 0) { pr.tx = e2.x; pr.ty = e2.y - enemyH(e2) * 0.55; }
     const k = Math.min(1, pr.t / pr.dur);
-    const e2 = B.enemy;
-    if (e2) { pr.tx = e2.x; pr.ty = e2.y - spriteH(e2) * 0.5; }
     pr.x = lerp(pr.sx, pr.tx, k);
-    pr.y = lerp(pr.sy, pr.ty, k) - Math.sin(k * Math.PI) * (pr.type === 'arrow' ? 26 : 12);
+    pr.y = lerp(pr.sy, pr.ty, k) - Math.sin(k * Math.PI) * (pr.type === 'arrow' ? 22 : 14);
     if (k >= 1) { projectileArrive(pr); B.projs.splice(i, 1); }
   }
 
-  // fx
   for (let i = B.fx.length - 1; i >= 0; i--) {
     const f = B.fx[i]; f.t += dt; f.life -= dt;
     if (f.life <= 0) B.fx.splice(i, 1);
   }
-  // particles
   for (let i = B.parts.length - 1; i >= 0; i--) {
     const q = B.parts[i];
     q.life -= dt;
@@ -1431,7 +1858,6 @@ function updateBattle(dt) {
     q.x += q.vx * dt; q.y += q.vy * dt;
     if (q.life <= 0) B.parts.splice(i, 1);
   }
-  // numbers
   for (let i = B.hits.length - 1; i >= 0; i--) {
     const h = B.hits[i];
     h.life -= dt;
@@ -1439,14 +1865,12 @@ function updateBattle(dt) {
     if (h.life <= 0) B.hits.splice(i, 1);
   }
 
-  // out-of-combat regeneration
-  if (!B.enemy) {
+  if (!B.enemies.length) {
     party.forEach(p => {
       if (!p.down && p.hp < p.maxHp) p.hp = Math.min(p.maxHp, p.hp + p.maxHp * 0.03 * dt);
     });
   }
 
-  // party wipe handling
   if (party.every(p => p.down > 0) && B.wipeT <= 0) {
     B.wipeT = 3.2;
     toast('파티 전멸! 3초 후 재정비합니다');
@@ -1456,29 +1880,86 @@ function updateBattle(dt) {
     B.wipeT -= dt;
     if (B.wipeT <= 0) {
       party.forEach(p => { p.down = 0; p.hp = p.maxHp * 0.7; p.healGlow = 0.6; });
-      addFx({ type: 'ring', x: W * 0.3, y: groundY - 10, r0: 10, r1: 200, life: 0.8, max: 0.8, color: '255,255,255' });
+      addFx({ type: 'ring', x: WALL.x * 0.6, y: WALL.top, r0: 10, r1: 200, life: 0.8, max: 0.8, color: '255,255,255' });
     }
   }
 }
 
-function enemyStrike(e) {
-  const alive = party.filter(p => !p.down);
-  if (!alive.length) return;
-  const tank = alive.find(p => p.key === 'knight');
-  const target = (tank && Math.random() < 0.45) ? tank : pick(alive);
-  e.anim = 1;
-  const dmg = Math.round(e.atk * rnd(0.85, 1.15));
-  at(0.16, () => {
-    if (target.down) return;
-    target.hp -= dmg;
-    target.hurt = 0.35;
-    addNum(target.x, target.y - heroH * 0.95, dmg, 'hit');
-    spark(target.x, target.y - heroH * 0.5, 6, '#ff8a8a', 200);
-    B.shake = Math.max(B.shake, e.boss ? 7 : 3.4);
-    Audio2.play('hit');
-    if (target.hp <= 0) {
-      target.hp = 0; target.down = 5;
-      toast(target.name + ' 쓰러짐! 5초 후 부활합니다');
+function updateEnemies(dt) {
+  const list = B.enemies;
+  for (let i = list.length - 1; i >= 0; i--) {
+    const e = list[i];
+    e.t += dt;
+    if (e.spawnIn > 0) e.spawnIn -= dt;
+    e.hurt = Math.max(0, e.hurt - dt);
+    e.anim = Math.max(0, e.anim - dt * 3.4);
+    if (e.dying > 0) {
+      e.dying -= dt;
+      if (e.dying <= 0) list.splice(i, 1);
+      continue;
+    }
+    e.stopX = WALL.x + enemyH(e) * 0.30 + e.depth * 12;
+    if (e.kb > 0) {
+      e.kbT += dt;
+      e.x += e.kb * dt;
+      e.kb -= 1150 * dt;
+      if (e.kb <= 0) { e.kb = 0; e.kbT = 0; }
+      if (e.x > W + 300) { e.x = W + 300; e.kb = 0; e.kbT = 0; }
+    } else if (e.state === 'walk') {
+      e.x -= e.spd * dt * (e.spawnIn > 0 ? 0.35 : 1);
+      if (e.x <= e.stopX) { e.x = e.stopX; e.state = 'attack'; e.atkT = rnd(0.35, 1.2); }
+    } else if (e.state === 'attack') {
+      e.atkT -= dt;
+      if (e.atkT <= 0) {
+        e.atkT = rnd(1.5, 2.2) * (e.boss ? 1.35 : 1);
+        e.anim = 1;
+        enemyHitWall(e);
+      }
+    }
+    if (e.thrower && B.breakT <= 0) {
+      e.throwT -= dt;
+      if (e.throwT <= 0) {
+        e.throwT = rnd(4.5, 8.5);
+        throwAtParty(e);
+      }
+    }
+  }
+}
+
+function updateParty(dt) {
+  party.forEach(p => {
+    p.anim = Math.max(0, p.anim - dt / (p.animDur || 0.34));
+    p.hurt = Math.max(0, p.hurt - dt);
+    p.healGlow = Math.max(0, p.healGlow - dt);
+    if (p.down > 0) {
+      p.down -= dt;
+      if (p.down <= 0) {
+        p.down = 0;
+        p.hp = p.maxHp * 0.5;
+        p.healGlow = 0.9;
+        addNum(p.x, p.y - p.hh * 0.9, Math.round(p.maxHp * 0.5), 'heal');
+      }
+      return;
+    }
+    const foes = aliveEnemies();
+    if (!foes.length || B.breakT > 0) return;
+    const nearWall = foes.some(f => f.x < WALL.x + 210);
+    p.atkT -= dt;
+    if (p.atkT <= 0) {
+      p.atkT = p.cd * rnd(0.92, 1.08) * (p.key === 'knight' && !nearWall ? 1.9 : 1);
+      partyAttack(p);
+    }
+    p.skillT -= dt;
+    if (p.skillT <= 0) {
+      p.skillT = rnd(6.0, 8.5);
+      if (p.key === 'priest') p.skillT = rnd(4.5, 6.0);
+      castSignature(p);
+    }
+    p.ultT -= dt;
+    if (p.ultT <= 0 && B.t - B.lastUlt > 5.5) {
+      p.ultT = rnd(12, 16);
+      B.lastUlt = B.t;
+      castUltimate(p);
     }
   });
 }
@@ -1486,34 +1967,190 @@ function enemyStrike(e) {
 /* ============================================================
    RENDER
    ============================================================ */
-function drawSprite(key, x, yBase, h, opt) {
+function drawActor(key, x, yb, h, o) {
   const img = IMG[key];
-  opt = opt || {};
-  if (!img) {
-    ctx.save();
-    ctx.globalAlpha = 0.85;
-    ctx.fillStyle = opt.fallback || '#5a6b93';
-    const w = h * 0.62;
-    ctx.beginPath();
-    ctx.roundRect ? ctx.roundRect(x - w / 2, yBase - h, w, h, 10) : ctx.rect(x - w / 2, yBase - h, w, h);
-    ctx.fill();
-    ctx.restore();
-    return;
-  }
-  const w = img.width / img.height * h;
+  o = o || {};
+  const w = img ? (img.width / img.height) * h : h * 0.62;
   ctx.save();
-  if (opt.flash) ctx.filter = 'brightness(1.85) saturate(.55)';
-  else if (opt.tint === 'gold') ctx.filter = 'sepia(1) saturate(3.4) hue-rotate(-12deg) brightness(1.12)';
-  else if (opt.tint === 'crystal') ctx.filter = 'hue-rotate(150deg) saturate(1.7) brightness(1.15)';
-  else if (opt.gray) ctx.filter = 'grayscale(.85) brightness(.8)';
-  if (opt.rot) {
-    ctx.translate(x, yBase - h * 0.35);
-    ctx.rotate(opt.rot);
-    ctx.globalAlpha = opt.alpha === undefined ? 1 : opt.alpha;
-    ctx.drawImage(img, -w / 2, -h * 0.5, w, h);
+  ctx.translate(x, yb);
+  if (o.rot) ctx.rotate(o.rot);
+  ctx.scale(o.sx === undefined ? 1 : o.sx, o.sy === undefined ? 1 : o.sy);
+  if (o.alpha !== undefined) ctx.globalAlpha = o.alpha;
+  if (o.tint === 'gold') ctx.filter = 'sepia(1) saturate(3.4) hue-rotate(-12deg) brightness(1.12)';
+  else if (o.tint === 'crystal') ctx.filter = 'hue-rotate(150deg) saturate(1.7) brightness(1.15)';
+  else if (o.gray) ctx.filter = 'grayscale(.85) brightness(.78)';
+  if (!img) {
+    ctx.fillStyle = o.fallback || '#5a6b93';
+    ctx.beginPath();
+    ctx.roundRect ? ctx.roundRect(-w / 2, -h, w, h, 10) : ctx.rect(-w / 2, -h, w, h);
+    ctx.fill();
   } else {
-    ctx.globalAlpha = opt.alpha === undefined ? 1 : opt.alpha;
-    ctx.drawImage(img, x - w / 2, yBase - h, w, h);
+    ctx.drawImage(img, -w / 2, -h, w, h);
+    if (o.flash) {
+      ctx.globalCompositeOperation = 'lighter';
+      ctx.filter = 'none';
+      ctx.globalAlpha = (o.alpha === undefined ? 1 : o.alpha) * 0.6;
+      ctx.drawImage(img, -w / 2, -h, w, h);
+    }
+  }
+  ctx.restore();
+}
+function drawShadow(x, y, w, a) {
+  if (w <= 0.5) return;
+  ctx.save();
+  const g = ctx.createRadialGradient(x, y, 2, x, y, w);
+  g.addColorStop(0, 'rgba(0,0,0,' + (a || 0.5) + ')');
+  g.addColorStop(1, 'rgba(0,0,0,0)');
+  ctx.fillStyle = g;
+  ctx.beginPath();
+  ctx.ellipse(x, y, w, w * 0.30, 0, 0, 6.283);
+  ctx.fill();
+  ctx.restore();
+}
+
+const hash2 = (a, b) => {
+  const s = Math.sin(a * 127.1 + b * 311.7) * 43758.5453;
+  return s - Math.floor(s);
+};
+
+function drawWall() {
+  const x1 = WALL.x, top = WALL.top, bot = groundY + 34;
+  const dmg = 1 - clamp(WALL.hp / WALL.max, 0, 1);
+  const shx = WALL.shake > 0 ? rnd(-1, 1) * WALL.shake * 0.5 : 0;
+  ctx.save();
+  ctx.translate(shx, 0);
+
+  // ---- 성벽 본체 ----
+  const g = ctx.createLinearGradient(0, WALL.backTop, 0, bot);
+  g.addColorStop(0, '#55637d');
+  g.addColorStop(0.30, '#3b465d');
+  g.addColorStop(0.72, '#242c3d');
+  g.addColorStop(1, '#12171f');
+  ctx.fillStyle = g;
+  ctx.fillRect(-12, WALL.backTop, x1 + 12, bot - WALL.backTop);
+
+  // ---- 돌 블록 ----
+  const bh = Math.max(13, WALL.h * 0.105);
+  const bw = Math.max(22, x1 * 0.30);
+  ctx.save();
+  for (let r = 0; r * bh < bot - WALL.top; r++) {
+    const off = (r % 2) ? -bw * 0.5 : 0;
+    for (let c = -1; c * bw + off < x1 + 12; c++) {
+      const bx = -12 + c * bw + off;
+      const by = WALL.top + r * bh;
+      if (by > bot) break;
+      const h1 = hash2(r, c);
+      const h2v = hash2(c, r + 7);
+      ctx.fillStyle = 'rgba(' + ((58 + h1 * 46) | 0) + ',' + ((70 + h1 * 46) | 0) + ',' + ((94 + h1 * 52) | 0) + ',0.92)';
+      ctx.fillRect(bx + 1.2, by + 1.2, bw - 2.4, bh - 2.4);
+      ctx.fillStyle = 'rgba(190,214,246,' + (0.03 + h2v * 0.06) + ')';
+      ctx.fillRect(bx + 1.2, by + 1.2, bw - 2.4, 1.5);
+      if (h2v > 0.86) {
+        ctx.fillStyle = 'rgba(20,26,38,.5)';
+        ctx.fillRect(bx + 3, by + bh * 0.5, bw * 0.4, 1.2);
+      }
+    }
+  }
+  ctx.restore();
+
+  // ---- 성벽 위 통로(뒷면) ----
+  const walk = ctx.createLinearGradient(0, WALL.backTop, 0, WALL.top);
+  walk.addColorStop(0, 'rgba(96,112,140,.95)');
+  walk.addColorStop(1, 'rgba(72,86,110,.98)');
+  ctx.fillStyle = walk;
+  ctx.fillRect(-12, WALL.backTop, x1 + 12, WALL.top - WALL.backTop + 1);
+
+  // ---- 앞쪽 흉벽(크레넬) ----
+  const mw = clamp(x1 * 0.17, 12, 26), gap = mw * 0.82;
+  for (let mx = -8; mx < x1; mx += mw + gap) {
+    ctx.fillStyle = '#4a5772';
+    ctx.fillRect(mx, top - mw * 0.62, mw, mw * 0.66);
+    ctx.fillStyle = 'rgba(180,205,240,.16)';
+    ctx.fillRect(mx, top - mw * 0.62, mw, 2);
+  }
+  ctx.fillStyle = 'rgba(150,180,220,.20)';
+  ctx.fillRect(-12, top - 2, x1 + 12, 2.4);
+
+  // ---- 성문 ----
+  const gw = Math.min(x1 * 0.52, 74), gh = WALL.h * 0.42;
+  const gx = x1 * 0.24, gy = bot - gh;
+  ctx.save();
+  ctx.fillStyle = 'rgba(8,11,18,.92)';
+  ctx.beginPath();
+  ctx.moveTo(gx, gy);
+  ctx.lineTo(gx, gy + gh * 0.35);
+  ctx.quadraticCurveTo(gx + gw / 2, gy - gh * 0.16, gx + gw, gy + gh * 0.35);
+  ctx.lineTo(gx + gw, gy + gh);
+  ctx.closePath();
+  ctx.fill();
+  ctx.strokeStyle = 'rgba(90,70,44,.85)';
+  ctx.lineWidth = 2;
+  for (let i = 1; i < 4; i++) {
+    ctx.beginPath();
+    ctx.moveTo(gx + (gw / 4) * i, gy + gh * 0.24);
+    ctx.lineTo(gx + (gw / 4) * i, gy + gh);
+    ctx.stroke();
+  }
+  ctx.restore();
+
+  // ---- 횃불 ----
+  const flick = 0.72 + 0.28 * Math.sin(WALL.torch * 9) * Math.sin(WALL.torch * 3.7);
+  const fx2 = x1 * 0.80, fy2 = WALL.top + WALL.h * 0.42;
+  const fg = ctx.createRadialGradient(fx2, fy2, 2, fx2, fy2, 46 * flick);
+  fg.addColorStop(0, 'rgba(255,200,110,' + (0.5 * flick) + ')');
+  fg.addColorStop(1, 'rgba(255,140,40,0)');
+  ctx.fillStyle = fg;
+  ctx.beginPath(); ctx.arc(fx2, fy2, 46 * flick, 0, 6.283); ctx.fill();
+  ctx.fillStyle = '#ffd27a';
+  ctx.beginPath(); ctx.ellipse(fx2, fy2, 3, 6 * flick, 0, 0, 6.283); ctx.fill();
+
+  // ---- 깨진 금 ----
+  const nCrack = Math.floor(clamp(dmg, 0, 1) * 3.99);
+  ctx.save();
+  ctx.strokeStyle = 'rgba(12,16,24,.85)';
+  ctx.lineWidth = 1.8;
+  ctx.lineCap = 'round';
+  for (let i = 0; i < nCrack && i < WALL.cracks.length; i++) {
+    const pts = WALL.cracks[i];
+    ctx.beginPath();
+    ctx.moveTo(pts[0][0], pts[0][1]);
+    for (let k = 1; k < pts.length; k++) ctx.lineTo(pts[k][0], pts[k][1]);
+    ctx.stroke();
+    ctx.strokeStyle = 'rgba(255,90,90,.28)';
+    ctx.lineWidth = 1;
+    ctx.stroke();
+    ctx.strokeStyle = 'rgba(12,16,24,.85)';
+    ctx.lineWidth = 1.8;
+  }
+  ctx.restore();
+
+  // ---- 피격 붉은 경고 ----
+  if (WALL.glow > 0.01) {
+    const wg = ctx.createLinearGradient(0, WALL.top, 0, bot);
+    wg.addColorStop(0, 'rgba(255,60,70,' + (0.30 * WALL.glow) + ')');
+    wg.addColorStop(1, 'rgba(255,30,50,' + (0.12 * WALL.glow) + ')');
+    ctx.fillStyle = wg;
+    ctx.fillRect(-12, WALL.top, x1 + 12, bot - WALL.top);
+    ctx.strokeStyle = 'rgba(255,120,120,' + (0.55 * WALL.glow) + ')';
+    ctx.lineWidth = 2.4;
+    ctx.strokeRect(-11, WALL.top, x1 + 10, bot - WALL.top);
+  }
+
+  // ---- 모서리 하이라이트 ----
+  ctx.fillStyle = 'rgba(180,210,255,.10)';
+  ctx.fillRect(x1 - 3, WALL.top, 3, bot - WALL.top);
+  ctx.restore();
+}
+/* 성벽 앞 흉벽(캐릭터 발을 살짝 가림) */
+function drawParapetFront() {
+  const x1 = WALL.x, top = WALL.top;
+  const mw = clamp(x1 * 0.17, 12, 26), gap = mw * 0.82;
+  ctx.save();
+  for (let mx = -8; mx < x1; mx += mw + gap) {
+    ctx.fillStyle = 'rgba(34,42,58,.96)';
+    ctx.fillRect(mx, top - mw * 0.30, mw, mw * 0.34);
+    ctx.fillStyle = 'rgba(120,148,190,.16)';
+    ctx.fillRect(mx, top - mw * 0.30, mw, 1.4);
   }
   ctx.restore();
 }
@@ -1523,28 +2160,23 @@ function drawBG() {
   const key = ch % 2 === 0 ? 'bg_forest' : 'bg_castle';
   const img = IMG[key];
   if (img) {
-    // cover the canvas, panning slowly inside the overflow so edges never repeat
     const scale = Math.max(W / img.width, (H * 1.06) / img.height);
     const dw = img.width * scale, dh = img.height * scale;
     const over = Math.max(0, dw - W);
     const kick = B.bgKick > 0 ? -Math.pow(B.bgKick, 1.6) * W * 0.22 : 0;
     const x0 = clamp(-over * 0.5 + Math.sin(B.t * 0.07) * over * 0.36 + kick, -over, 0);
     const y0 = H - dh;
-    ctx.save();
     ctx.drawImage(img, x0, y0, dw, dh);
-    ctx.restore();
     if (B.mode === 'dungeon') {
-      ctx.save();
-      ctx.fillStyle = B.dgn && B.dgn.type === 'gold' ? 'rgba(90,60,0,.34)' : B.dgn && B.dgn.type === 'dia' ? 'rgba(0,40,90,.34)' : 'rgba(80,0,0,.28)';
+      ctx.fillStyle = B.dgn && B.dgn.type === 'gold' ? 'rgba(90,60,0,.34)'
+        : B.dgn && B.dgn.type === 'dia' ? 'rgba(0,40,90,.34)' : 'rgba(80,0,0,.28)';
       ctx.fillRect(0, 0, W, H);
-      ctx.restore();
     }
   } else {
     const g = ctx.createLinearGradient(0, 0, 0, H);
     g.addColorStop(0, '#101b33'); g.addColorStop(1, '#050810');
     ctx.fillStyle = g; ctx.fillRect(0, 0, W, H);
   }
-  // ambient particles
   const amb = ch % 2 === 0 ? 'rgba(160,235,255,' : 'rgba(255,180,90,';
   for (let i = 0; i < 26; i++) {
     const sp = 10 + (i % 5) * 6;
@@ -1559,15 +2191,14 @@ function drawBG() {
 }
 
 function drawGround() {
-  // light pool on the fighting floor
   ctx.save();
-  const pool = ctx.createRadialGradient(W * 0.45, groundY + 10, 20, W * 0.45, groundY + 10, W * 0.46);
-  pool.addColorStop(0, 'rgba(120,190,255,.16)');
+  const pool = ctx.createRadialGradient(W * 0.62, groundY + 10, 20, W * 0.62, groundY + 10, W * 0.52);
+  pool.addColorStop(0, 'rgba(120,190,255,.14)');
   pool.addColorStop(0.6, 'rgba(90,150,220,.05)');
   pool.addColorStop(1, 'rgba(0,0,0,0)');
   ctx.fillStyle = pool;
   ctx.beginPath();
-  ctx.ellipse(W * 0.45, groundY + 18, W * 0.46, H * 0.13, 0, 0, 6.283);
+  ctx.ellipse(W * 0.62, groundY + 18, W * 0.52, H * 0.13, 0, 0, 6.283);
   ctx.fill();
   ctx.restore();
 
@@ -1577,171 +2208,242 @@ function drawGround() {
   g.addColorStop(0.55, 'rgba(4,7,14,.82)');
   g.addColorStop(1, 'rgba(2,4,9,.96)');
   ctx.fillStyle = g;
-  ctx.fillRect(0, groundY - 6, W, H - groundY + 6);
+  ctx.fillRect(WALL.x, groundY - 6, W, H - groundY + 6);
 
-  // glowing floor line
-  const lg = ctx.createLinearGradient(0, 0, W, 0);
-  lg.addColorStop(0, 'rgba(120,190,255,0)');
-  lg.addColorStop(0.25, 'rgba(150,210,255,.30)');
-  lg.addColorStop(0.6, 'rgba(255,210,140,.20)');
+  const lg = ctx.createLinearGradient(WALL.x, 0, W, 0);
+  lg.addColorStop(0, 'rgba(150,210,255,.26)');
+  lg.addColorStop(0.5, 'rgba(255,210,140,.16)');
   lg.addColorStop(1, 'rgba(120,190,255,0)');
   ctx.fillStyle = lg;
-  ctx.fillRect(0, groundY - 1.5, W, 1.8);
+  ctx.fillRect(WALL.x, groundY - 1.5, W, 1.8);
 
-  // floor tiles / sparkles
   for (let i = 0; i < 26; i++) {
-    const x = ((i * 89 + B.t * 12) % (W + 60)) - 30;
+    const x = WALL.x + ((i * 89 + B.t * 12) % (W + 60)) - 30;
     const y = groundY + 10 + (i % 7) * ((H - groundY) / 8);
     const a = 0.035 + (i % 4) * 0.022;
     ctx.fillStyle = 'rgba(150,200,255,' + a + ')';
     ctx.fillRect(x, y, 22 + (i % 3) * 14, 1.1);
   }
-  // distant fog band
   const fog = ctx.createLinearGradient(0, groundY - H * 0.05, 0, groundY + 2);
   fog.addColorStop(0, 'rgba(120,180,255,0)');
   fog.addColorStop(1, 'rgba(130,190,255,.10)');
   ctx.fillStyle = fog;
-  ctx.fillRect(0, groundY - H * 0.05, W, H * 0.05 + 2);
+  ctx.fillRect(WALL.x, groundY - H * 0.05, W, H * 0.05 + 2);
 }
 
-function drawForeground() {
-  const sway = B.t * 0.8;
-  ctx.save();
-  ctx.strokeStyle = 'rgba(3,6,12,.92)';
-  ctx.lineCap = 'round';
-  for (let i = 0; i < 40; i++) {
-    const x = (i * 47 + 12) % (W + 40) - 20;
-    const base = H + 4;
-    const hgt = 14 + ((i * 37) % 26);
-    const lean = Math.sin(sway + i * 0.7) * 5;
-    ctx.lineWidth = 2.4;
-    ctx.beginPath();
-    ctx.moveTo(x, base);
-    ctx.quadraticCurveTo(x + lean * 0.4, base - hgt * 0.6, x + lean, base - hgt);
-    ctx.stroke();
-    ctx.lineWidth = 1.7;
-    ctx.beginPath();
-    ctx.moveTo(x + 6, base);
-    ctx.quadraticCurveTo(x + 6 + lean * 0.6, base - hgt * 0.45, x + 8 + lean * 1.3, base - hgt * 0.7);
-    ctx.stroke();
-  }
-  ctx.restore();
+/* ---------- 몬스터 떼 ---------- */
+function drawEnemies() {
+  const list = B.enemies.slice().sort((a, b) => (a.y - b.y) || (a.x - b.x));
+  const t = B.t;
+  list.forEach(e => {
+    const h = enemyH(e);
+    let hop = 0, tilt = 0, sx = 1, sy = 1, dx = 0, alpha = 1, rot = 0;
+
+    if (e.dying > 0) {
+      const k = clamp(e.dying / 0.55, 0, 1);
+      alpha = k;
+      rot = (1 - k) * 1.5;
+      sy = 0.9 + (1 - k) * 0.1;
+      hop = -6 * (1 - k);
+    } else if (e.kb > 0) {
+      const k = clamp(e.kbT / 0.55, 0, 1);
+      hop = Math.sin(k * Math.PI) * h * 0.38;
+      rot = -k * 1.25;
+      sx = 1 + 0.06 * Math.sin(k * Math.PI);
+      sy = 1 - 0.05 * Math.sin(k * Math.PI);
+    } else if (e.state === 'walk') {
+      const ph = e.t * 3.6 + e.hop;
+      const bounce = Math.abs(Math.sin(ph));
+      hop = bounce * h * 0.075;
+      const land = Math.max(0, 1 - bounce * 2.4);
+      sy = 1 + 0.055 * Math.sin(ph * 2) - 0.05 * land;
+      sx = 1 - 0.045 * Math.sin(ph * 2) + 0.05 * land;
+      tilt = Math.sin(ph) * 0.055 + 0.03;
+      dx = -Math.sin(ph) * 1.5;
+    } else if (e.state === 'attack') {
+      const wind = clamp((e.atkT - 1.1) / 0.35, 0, 1);
+      const hit = e.anim;
+      hop = Math.abs(Math.sin(e.t * 2.2 + e.hop)) * h * 0.02;
+      tilt = -0.06 * wind + 0.20 * Math.sin(hit * Math.PI);
+      dx = -4 * wind + 12 * Math.sin(hit * Math.PI);
+      sy = 1 + 0.03 * Math.sin(hit * Math.PI);
+    }
+    if (e.hurt > 0) {
+      const k = clamp(e.hurt / 0.2, 0, 1);
+      sy *= 1 - 0.20 * k;
+      sx *= 1 + 0.18 * k;
+      dx += rnd(-2, 2) * k;
+    }
+    if (e.spawnIn > 0) alpha = clamp(1 - e.spawnIn / 0.34, 0, 1);
+
+    const bob = Math.sin(t * 1.9 + e.wob) * 2.0;
+    const yb = e.y + bob - hop;
+    const x = e.x + dx;
+
+    const liftRatio = clamp(hop / (h * 0.4), 0, 1);
+    drawShadow(x, e.y + 7, h * (e.boss ? 0.40 : 0.28) * (1 - liftRatio * 0.35), (e.boss ? 0.55 : 0.42) * (1 - liftRatio * 0.4) * alpha);
+
+    if (e.boss) {
+      const col = e.spr === 'mob_dragon' ? '255,90,60' : e.spr === 'mob_darkknight' ? '160,80,255' : '255,190,90';
+      const gg = ctx.createRadialGradient(x, yb - h * 0.42, 10, x, yb - h * 0.42, h * 0.75);
+      gg.addColorStop(0, 'rgba(' + col + ',.26)');
+      gg.addColorStop(1, 'rgba(' + col + ',0)');
+      ctx.fillStyle = gg;
+      ctx.beginPath(); ctx.arc(x, yb - h * 0.42, h * 0.75, 0, 6.283); ctx.fill();
+    }
+    drawActor(e.spr, x, yb, h, {
+      rot, sx, sy, alpha, flash: e.hurt > 0.02 && e.dying <= 0,
+      tint: e.tint, gray: e.dying > 0
+    });
+
+    if (e.hp > 0 && e.dying <= 0) {
+      const bw = clamp(h * (e.boss ? 0.8 : 0.52), 18, 96), bh = e.boss ? 5 : 3;
+      const bx = x - bw / 2, by = yb - h - (e.boss ? 13 : 8);
+      ctx.fillStyle = 'rgba(0,0,0,.55)';
+      ctx.fillRect(bx - 1, by - 1, bw + 2, bh + 2);
+      ctx.fillStyle = '#3a1520';
+      ctx.fillRect(bx, by, bw, bh);
+      const rr = clamp(e.hp / e.maxHp, 0, 1);
+      const g2 = ctx.createLinearGradient(bx, by, bx + bw, by);
+      if (e.boss) { g2.addColorStop(0, '#ff9a6b'); g2.addColorStop(1, '#c01030'); }
+      else { g2.addColorStop(0, '#ff8a5c'); g2.addColorStop(1, '#e0203c'); }
+      ctx.fillStyle = g2;
+      ctx.fillRect(bx, by, bw * rr, bh);
+    }
+  });
 }
 
-function drawShadow(x, y, w, a) {
-  ctx.save();
-  const g = ctx.createRadialGradient(x, y, 2, x, y, w);
-  g.addColorStop(0, 'rgba(0,0,0,' + (a || 0.5) + ')');
-  g.addColorStop(1, 'rgba(0,0,0,0)');
-  ctx.fillStyle = g;
-  ctx.beginPath();
-  ctx.ellipse(x, y, w, w * 0.28, 0, 0, 6.283);
-  ctx.fill();
-  ctx.restore();
-}
-
+/* ---------- 아군 파티 ---------- */
 function drawParty() {
-  party.forEach((p, i) => {
-    const lunge = easeOut(Math.min(1, p.anim)) * (p.reach ? 30 : 6);
-    const bob = Math.sin(B.t * 2.2 + p.bob) * 2.4;
-    const x = p.x + lunge * (p.key === 'knight' ? 1 : 0.35);
-    const yb = groundY + 4 + bob;
-    const hh = heroH * (p.key === 'knight' ? 1.0 : 0.94);
+  const list = party.slice().sort((a, b) => (a.y - b.y) || (a.x - b.x));
+  const t = B.t;
+  list.forEach(p => {
+    const hh = p.hh;
+    let dx = 0, dy = 0, tilt = 0, sx = 1, sy = 1, lift = 0;
+
+    // 숨쉬기 (squash & stretch)
+    const breath = Math.sin(t * 1.9 + p.phase);
+    sy += 0.032 * breath;
+    sx -= 0.024 * breath;
+    dy += Math.sin(t * 1.7 + p.phase) * 0.9;
+
+    // 부유 (마법사/성직자)
+    if (p.key === 'mage' || p.key === 'priest') {
+      const fl = Math.sin(t * 1.35 + p.phase);
+      dy -= 2.2 + fl * 1.8;
+      lift = 2.2 + fl * 1.8;
+      tilt += fl * 0.012;
+    }
+
+    const a = p.anim;
+    if (p.down <= 0 && a > 0) {
+      const k = 1 - a; // 0 → 1
+      if (p.key === 'knight') {
+        if (k < 0.26) {
+          const q = k / 0.26;
+          dx = -11 * easeOut(q);
+          tilt = -0.09 * q;
+          sy *= 1 - 0.05 * q;
+          sx *= 1 + 0.04 * q;
+        } else if (k < 0.58) {
+          const q = (k - 0.26) / 0.32;
+          dx = lerp(-11, 36, easeOut(q));
+          tilt = lerp(-0.09, 0.24, q);
+          sy *= 1 + 0.06 * Math.sin(q * Math.PI);
+          sx *= 1 - 0.03 * Math.sin(q * Math.PI);
+        } else {
+          const q = (k - 0.58) / 0.42;
+          dx = lerp(36, 0, q * q);
+          tilt = lerp(0.24, 0, easeOut(q));
+          sy *= 1 - 0.03 * Math.sin(q * Math.PI);
+        }
+      } else if (p.key === 'archer') {
+        const q = k;
+        const rec = Math.sin(q * Math.PI);
+        dx = -5 * rec;
+        dy -= 4.5 * Math.abs(Math.sin(q * Math.PI * 1.3));
+        tilt = 0.07 * Math.sin(q * Math.PI * 2);
+        sy *= 1 + 0.03 * rec;
+      } else if (p.key === 'mage') {
+        const q = k;
+        const rec = Math.sin(q * Math.PI);
+        dx = -9 * rec;
+        dy -= 5 * rec;
+        sy *= 1 + 0.07 * rec;
+        sx *= 1 - 0.04 * rec;
+        tilt = -0.06 * rec;
+        lift += 5 * rec;
+      } else {
+        const q = k;
+        const rec = Math.sin(q * Math.PI);
+        dx = 3 * rec;
+        dy -= 3.5 * rec;
+        sy *= 1 + 0.04 * rec;
+        tilt = 0.03 * rec;
+      }
+    }
+
+    // 피격 경직
+    if (p.hurt > 0) {
+      const k = p.hurt / 0.35;
+      dx += Math.sin(p.hurt * 62) * 5 * k;
+      tilt += Math.sin(p.hurt * 47) * 0.09 * k;
+      sx *= 1 + 0.05 * k;
+      sy *= 1 - 0.04 * k;
+    }
+
+    const x = p.x + dx;
+    const yb = p.y + dy;
+
+    // 그림자
     if (p.down > 0) {
-      drawShadow(x, groundY + 4, hh * 0.30, 0.35);
-      drawSprite(p.img, x, groundY + 2, hh * 0.7, { rot: -1.35, alpha: 0.42, gray: true });
+      drawShadow(x, p.y + 3, hh * 0.26, 0.3);
+      drawActor(p.img, x, p.y + 2, hh * 0.62, { rot: -1.42, alpha: 0.42, gray: true, sx: 1, sy: 1 });
       ctx.save();
       ctx.font = '900 10px "Noto Sans KR",sans-serif';
-      ctx.fillStyle = 'rgba(255,140,150,.9)';
+      ctx.fillStyle = 'rgba(255,140,150,.95)';
       ctx.textAlign = 'center';
-      ctx.fillText(Math.ceil(p.down) + '초', x, groundY - 6);
+      ctx.fillText(Math.ceil(p.down) + '초', x, p.y - 8);
       ctx.restore();
       return;
     }
-    drawShadow(x, groundY + 4, hh * 0.34, 0.5);
-    // heal glow
+    drawShadow(x, p.y + 3, hh * 0.27 * (1 - clamp(lift / 26, 0, 0.3)), 0.42);
+
+    // 힐 발광
     if (p.healGlow > 0) {
       ctx.save();
-      const g = ctx.createRadialGradient(x, yb - hh * 0.45, 4, x, yb - hh * 0.45, hh * 0.62);
-      g.addColorStop(0, 'rgba(255,230,150,' + (0.28 * p.healGlow) + ')');
-      g.addColorStop(1, 'rgba(255,230,150,0)');
-      ctx.fillStyle = g;
-      ctx.beginPath(); ctx.arc(x, yb - hh * 0.45, hh * 0.62, 0, 6.283); ctx.fill();
+      const gg = ctx.createRadialGradient(x, yb - hh * 0.45, 4, x, yb - hh * 0.45, hh * 0.66);
+      gg.addColorStop(0, 'rgba(255,230,150,' + (0.30 * p.healGlow) + ')');
+      gg.addColorStop(1, 'rgba(255,230,150,0)');
+      ctx.fillStyle = gg;
+      ctx.beginPath(); ctx.arc(x, yb - hh * 0.45, hh * 0.66, 0, 6.283); ctx.fill();
       ctx.restore();
     }
-    drawSprite(p.img, x, yb, hh, { flash: p.hurt > 0.22 });
-    // name tag
+
+    drawActor(p.img, x, yb, hh, { rot: tilt, sx, sy, flash: p.hurt > 0.2 });
+
+    // 이름표
     ctx.save();
     ctx.font = '800 9px "Noto Sans KR",sans-serif';
     ctx.textAlign = 'center';
-    const label = p.name;
-    const tw = ctx.measureText(label).width;
+    const tw = ctx.measureText(p.name).width;
     ctx.fillStyle = 'rgba(6,10,20,.62)';
     ctx.beginPath();
     (ctx.roundRect ? ctx.roundRect(x - tw / 2 - 6, yb + 2, tw + 12, 13, 6) : ctx.rect(x - tw / 2 - 6, yb + 2, tw + 12, 13));
     ctx.fill();
     ctx.fillStyle = p.color;
-    ctx.fillText(label, x, yb + 11.5);
+    ctx.fillText(p.name, x, yb + 11.5);
     ctx.restore();
-    // hp bar
-    const bw = Math.min(46, hh * 0.42), bh = 3;
-    const bx = x - bw / 2, by = yb + 17;
+
+    // 체력바
+    const bw = Math.min(44, hh * 0.46), bh = 3;
+    const bx = x - bw / 2, by = yb + 16;
     ctx.fillStyle = 'rgba(0,0,0,.55)';
     ctx.fillRect(bx, by, bw, bh);
     const ratio = clamp(p.hp / p.maxHp, 0, 1);
     ctx.fillStyle = ratio > 0.45 ? '#5ee08a' : ratio > 0.2 ? '#ffc94a' : '#ff5566';
     ctx.fillRect(bx, by, bw * ratio, bh);
   });
-}
-
-function drawEnemy() {
-  const e = B.enemy;
-  if (!e) return;
-  const h = spriteH(e);
-  const lunge = e.anim > 0 && e.atkT < 0.45 ? -22 * Math.sin(e.anim * Math.PI) : 0;
-  const x = e.x + lunge;
-  const bob = e.boss ? Math.sin(B.t * 1.6) * 3 : Math.sin(B.t * 2 + e.wander) * 2.2;
-  const yb = groundY + 4 + bob;
-  const dyingK = e.dying > 0 ? clamp(e.dying / 0.52, 0, 1) : 1;
-  drawShadow(x, groundY + 4, h * (e.boss ? 0.44 : 0.34), 0.55 * dyingK);
-  if (e.boss) {
-    ctx.save();
-    const g = ctx.createRadialGradient(x, groundY - h * 0.42, 10, x, groundY - h * 0.42, h * 0.75);
-    const col = e.spr === 'mob_dragon' ? '255,90,60' : e.spr === 'mob_darkknight' ? '160,80,255' : '255,190,90';
-    g.addColorStop(0, 'rgba(' + col + ',.30)');
-    g.addColorStop(1, 'rgba(' + col + ',0)');
-    ctx.fillStyle = g;
-    ctx.beginPath(); ctx.arc(x, groundY - h * 0.42, h * 0.75, 0, 6.283); ctx.fill();
-    ctx.restore();
-  }
-  ctx.save();
-  if (dyingK < 1) ctx.globalAlpha = dyingK;
-  const scaleY = 1 + (1 - dyingK) * 0.12;
-  ctx.translate(x, yb);
-  ctx.scale(1, scaleY);
-  ctx.translate(-x, -yb);
-  drawSprite(e.spr, x, yb, h * (0.96 + 0.04 * dyingK), {
-    flash: e.hurt > 0, tint: e.tint, rot: e.dying > 0 ? (1 - dyingK) * 0.5 : 0,
-    alpha: dyingK < 1 ? dyingK : 1
-  });
-  ctx.restore();
-  if (!e.boss && e.hp > 0 && e.dying <= 0) {
-    const bw = Math.min(70, h * 0.7), bh = 4;
-    const bx = x - bw / 2, by = yb - h - 9;
-    ctx.fillStyle = 'rgba(0,0,0,.6)';
-    ctx.fillRect(bx - 1, by - 1, bw + 2, bh + 2);
-    ctx.fillStyle = '#3a1520';
-    ctx.fillRect(bx, by, bw, bh);
-    const rr = clamp(e.hp / e.maxHp, 0, 1);
-    const g2 = ctx.createLinearGradient(bx, by, bx + bw, by);
-    g2.addColorStop(0, '#ff8a5c'); g2.addColorStop(1, '#e0203c');
-    ctx.fillStyle = g2;
-    ctx.fillRect(bx, by, bw * rr, bh);
-    ctx.font = '800 8px "Noto Sans KR",sans-serif';
-    ctx.textAlign = 'center';
-    ctx.fillStyle = 'rgba(255,220,220,.9)';
-    ctx.fillText(e.name, x, by - 4);
-  }
 }
 
 function drawProjectiles() {
@@ -1758,8 +2460,25 @@ function drawProjectiles() {
       ctx.beginPath(); ctx.moveTo(-26, 0); ctx.lineTo(6, 0); ctx.stroke();
       ctx.fillStyle = '#eaffd8';
       ctx.beginPath(); ctx.moveTo(12, 0); ctx.lineTo(2, -3.4); ctx.lineTo(2, 3.4); ctx.closePath(); ctx.fill();
+    } else if (pr.type === 'enemy') {
+      ctx.translate(pr.x, pr.y);
+      ctx.rotate(B.t * 14);
+      if (pr.spr === 'mob_dragon') {
+        const g = ctx.createRadialGradient(0, 0, 1, 0, 0, 16);
+        g.addColorStop(0, 'rgba(255,255,210,1)');
+        g.addColorStop(0.45, 'rgba(255,150,60,.9)');
+        g.addColorStop(1, 'rgba(255,60,20,0)');
+        ctx.fillStyle = g;
+        ctx.beginPath(); ctx.arc(0, 0, 16, 0, 6.283); ctx.fill();
+      } else {
+        ctx.fillStyle = '#cfd8ea';
+        ctx.beginPath();
+        ctx.moveTo(-2, -9); ctx.lineTo(9, 0); ctx.lineTo(-2, 9); ctx.lineTo(-6, 0);
+        ctx.closePath(); ctx.fill();
+        ctx.strokeStyle = 'rgba(30,40,60,.9)'; ctx.lineWidth = 1.4; ctx.stroke();
+      }
     } else if (pr.type === 'fire') {
-      const r = 11 + Math.sin(B.t * 26) * 2;
+      const r = 10 + Math.sin(B.t * 26) * 2;
       const g = ctx.createRadialGradient(pr.x, pr.y, 1, pr.x, pr.y, r * 2.6);
       g.addColorStop(0, 'rgba(255,255,220,.98)');
       g.addColorStop(0.35, 'rgba(255,180,80,.9)');
@@ -1789,7 +2508,7 @@ function drawFx() {
     if (f.type === 'slash') {
       ctx.globalAlpha = (1 - k) * 0.95;
       ctx.strokeStyle = f.color;
-      ctx.lineWidth = f.w * (1 - k * 0.6);
+      ctx.lineWidth = (f.w || 8) * (1 - k * 0.6);
       ctx.lineCap = 'round';
       ctx.shadowColor = f.color; ctx.shadowBlur = 16;
       ctx.beginPath();
@@ -1811,30 +2530,36 @@ function drawFx() {
       ctx.globalAlpha = 1 - k;
       ctx.fillStyle = 'rgba(' + f.color + ',1)';
       ctx.beginPath(); ctx.arc(f.x, f.y, 16 * (1 - k) + 3, 0, 6.283); ctx.fill();
-    } else if (f.type === 'beam') {
-      ctx.globalAlpha = (1 - k) * 0.95;
-      ctx.strokeStyle = 'rgba(' + f.color + ',1)';
-      ctx.lineWidth = f.w * (1 - k * 0.7);
-      ctx.shadowColor = 'rgba(' + f.color + ',1)'; ctx.shadowBlur = 24;
-      ctx.beginPath();
-      ctx.moveTo(f.x1, f.y1);
-      const steps = 8;
-      for (let i = 1; i <= steps; i++) {
-        const t = i / steps;
-        ctx.lineTo(lerp(f.x1, f.x2, t), lerp(f.y1, f.y2, t) + Math.sin(t * 12 + B.t * 40) * 7 * (1 - t));
+    } else if (f.type === 'rush') {
+      // 방패 밀치기 충격파
+      ctx.globalAlpha = (1 - k) * 0.9;
+      const w = (f.w || 30) * (1 - k * 0.4);
+      for (let i = 0; i < 3; i++) {
+        const x = f.x + easeOut(k) * 260 + i * 40;
+        const g = ctx.createLinearGradient(x, 0, x + 90, 0);
+        g.addColorStop(0, 'rgba(200,230,255,.65)');
+        g.addColorStop(1, 'rgba(200,230,255,0)');
+        ctx.fillStyle = g;
+        ctx.beginPath();
+        ctx.ellipse(x, f.y, 26 * (1 - k * 0.3), w, 0, 0, 6.283);
+        ctx.fill();
       }
+      ctx.strokeStyle = 'rgba(220,240,255,' + (1 - k) * 0.8 + ')';
+      ctx.lineWidth = 3;
+      ctx.beginPath();
+      ctx.ellipse(f.x, f.y, 40 + easeOut(k) * 300, (40 + easeOut(k) * 300) * 0.5, 0, 0, 6.283);
       ctx.stroke();
     } else if (f.type === 'meteor') {
-      const y = lerp(-80, f.y, Math.min(1, k / 0.45));
-      ctx.globalAlpha = k < 0.9 ? 1 : (1 - k) * 6;
-      const g = ctx.createRadialGradient(f.x, y, 4, f.x, y, 46);
-      g.addColorStop(0, 'rgba(255,255,220,1)');
-      g.addColorStop(0.4, 'rgba(255,160,60,.9)');
+      const y = lerp(-90, f.y, Math.min(1, k / 0.42));
+      ctx.globalAlpha = k < 0.9 ? 1 : (1 - k) * 8;
+      const g = ctx.createRadialGradient(f.x, y - 40, 4, f.x, y, 54);
+      g.addColorStop(0, 'rgba(255,255,230,1)');
+      g.addColorStop(0.4, 'rgba(255,160,60,.92)');
       g.addColorStop(1, 'rgba(255,60,20,0)');
       ctx.fillStyle = g;
-      ctx.beginPath(); ctx.arc(f.x, y, 46, 0, 6.283); ctx.fill();
-      ctx.strokeStyle = 'rgba(255,140,60,.6)'; ctx.lineWidth = 8;
-      ctx.beginPath(); ctx.moveTo(f.x + 14, y - 60); ctx.lineTo(f.x, y); ctx.stroke();
+      ctx.beginPath(); ctx.arc(f.x, y, 54, 0, 6.283); ctx.fill();
+      ctx.strokeStyle = 'rgba(255,140,60,.55)'; ctx.lineWidth = 10;
+      ctx.beginPath(); ctx.moveTo(f.x + 18, y - 80); ctx.lineTo(f.x, y); ctx.stroke();
     } else if (f.type === 'holyaura') {
       ctx.globalAlpha = (1 - k) * 0.8;
       for (let i = 0; i < 3; i++) {
@@ -1843,12 +2568,12 @@ function drawFx() {
         ctx.lineWidth = 2;
         ctx.beginPath(); ctx.ellipse(f.x, f.y, rr, rr * 0.6, 0, 0, 6.283); ctx.stroke();
       }
-      const g = ctx.createLinearGradient(f.x, f.y - 120, f.x, f.y);
+      const g = ctx.createLinearGradient(f.x, f.y - 140, f.x, f.y);
       g.addColorStop(0, 'rgba(255,240,190,0)');
       g.addColorStop(0.55, 'rgba(255,225,140,' + (0.26 * (1 - k)) + ')');
       g.addColorStop(1, 'rgba(255,240,190,0)');
       ctx.fillStyle = g;
-      ctx.fillRect(f.x - 55, f.y - 130, 110, 130);
+      ctx.fillRect(f.x - 60, f.y - 150, 120, 150);
     }
     ctx.restore();
   });
@@ -1867,43 +2592,37 @@ function drawParticles() {
 function drawHits() {
   B.hits.forEach(h => {
     const k = clamp(h.life / h.max, 0, 1);
-    const pop = h.life > h.max - 0.09 ? 1 + (1 - (h.max - h.life) / 0.09) * 0.0 : 1;
     const scale = h.scale * (0.86 + Math.min(0.14, (1 - k) * 0.9));
     ctx.save();
     ctx.globalAlpha = k > 0.35 ? 1 : k / 0.35;
     ctx.translate(h.x, h.y);
     ctx.scale(scale, scale);
     const big = h.crit || h.kind === 'gold';
-    const fs = big ? clamp(H * 0.031, 19, 31) : clamp(H * 0.024, 15, 24);
+    let fs = big ? clamp(H * 0.031, 19, 31) : clamp(H * 0.024, 15, 24);
+    if (h.kind === 'mini') fs = clamp(H * 0.018, 11, 17);
     ctx.font = '900 ' + fs + 'px "Black Han Sans","Noto Sans KR",sans-serif';
     ctx.textAlign = 'center';
     ctx.lineJoin = 'round';
-    if (h.kind === 'heal') {
-      ctx.fillStyle = '#8dffb0';
-      ctx.strokeStyle = 'rgba(4,30,14,.9)';
-    } else if (h.kind === 'gold') {
-      ctx.fillStyle = '#ffe066';
-      ctx.strokeStyle = 'rgba(80,50,0,.95)';
-    } else if (h.kind === 'dia') {
-      ctx.fillStyle = '#9be8ff';
-      ctx.strokeStyle = 'rgba(0,40,70,.95)';
-    } else if (h.kind === 'hit') {
-      ctx.fillStyle = '#ff9a9a';
-      ctx.strokeStyle = 'rgba(60,0,10,.95)';
-    } else if (h.crit) {
-      ctx.fillStyle = '#fff1a8';
-      ctx.strokeStyle = 'rgba(120,40,0,.95)';
-    } else {
-      ctx.fillStyle = '#ffffff';
-      ctx.strokeStyle = 'rgba(10,16,32,.92)';
-    }
+    if (h.kind === 'heal') { ctx.fillStyle = '#8dffb0'; ctx.strokeStyle = 'rgba(4,30,14,.9)'; }
+    else if (h.kind === 'gold') { ctx.fillStyle = '#ffe066'; ctx.strokeStyle = 'rgba(80,50,0,.95)'; }
+    else if (h.kind === 'dia') { ctx.fillStyle = '#9be8ff'; ctx.strokeStyle = 'rgba(0,40,70,.95)'; }
+    else if (h.kind === 'wall') { ctx.fillStyle = '#ff8a8a'; ctx.strokeStyle = 'rgba(50,0,8,.95)'; }
+    else if (h.kind === 'hit') { ctx.fillStyle = '#ff9a9a'; ctx.strokeStyle = 'rgba(60,0,10,.95)'; }
+    else if (h.crit) { ctx.fillStyle = '#fff1a8'; ctx.strokeStyle = 'rgba(120,40,0,.95)'; }
+    else { ctx.fillStyle = '#ffffff'; ctx.strokeStyle = 'rgba(10,16,32,.92)'; }
     if (h.crit) {
       ctx.shadowColor = 'rgba(255,190,60,.9)';
       ctx.shadowBlur = 16;
     }
-    ctx.lineWidth = 4;
-    ctx.strokeText(h.txt, 0, 0);
-    ctx.fillText(h.txt, 0, 0);
+    if (h.kind === 'mini') {
+      ctx.shadowColor = 'rgba(0,0,0,.9)';
+      ctx.shadowBlur = 3;
+      ctx.fillText(h.txt, 0, 0);
+    } else {
+      ctx.lineWidth = 4;
+      ctx.strokeText(h.txt, 0, 0);
+      ctx.fillText(h.txt, 0, 0);
+    }
     if (h.crit) {
       ctx.globalAlpha *= 0.9;
       ctx.font = '900 ' + Math.max(8, fs * 0.4) + 'px "Noto Sans KR",sans-serif';
@@ -1918,8 +2637,28 @@ function drawHits() {
   ctx.globalAlpha = 1;
 }
 
-function drawGoldFly() {
-  // gold drops already shown as numbers; add coin sparkle near party
+function drawForeground() {
+  const sway = B.t * 0.8;
+  ctx.save();
+  ctx.strokeStyle = 'rgba(3,6,12,.92)';
+  ctx.lineCap = 'round';
+  for (let i = 0; i < 40; i++) {
+    const x = WALL.x + (i * 47 + 12) % (W - WALL.x + 40) - 20;
+    const base = H + 4;
+    const hgt = 14 + ((i * 37) % 26);
+    const lean = Math.sin(sway + i * 0.7) * 5;
+    ctx.lineWidth = 2.4;
+    ctx.beginPath();
+    ctx.moveTo(x, base);
+    ctx.quadraticCurveTo(x + lean * 0.4, base - hgt * 0.6, x + lean, base - hgt);
+    ctx.stroke();
+    ctx.lineWidth = 1.7;
+    ctx.beginPath();
+    ctx.moveTo(x + 6, base);
+    ctx.quadraticCurveTo(x + 6 + lean * 0.6, base - hgt * 0.45, x + 8 + lean * 1.3, base - hgt * 0.7);
+    ctx.stroke();
+  }
+  ctx.restore();
 }
 
 function drawStageFlash() {
@@ -1942,8 +2681,10 @@ function draw() {
   ctx.translate(B.sx, B.sy);
   drawBG();
   drawGround();
-  if (B.enemy) drawEnemy();
+  drawWall();
+  drawEnemies();
   drawParty();
+  drawParapetFront();
   drawProjectiles();
   drawFx();
   drawParticles();
@@ -2000,32 +2741,46 @@ function updateHud() {
   const st = heroStats();
   $('#goldTxt').textContent = fmt(state.gold);
   $('#diaTxt').textContent = fmt(state.dia);
+  const w = B.wave || { idx: -1, plan: [] };
   if (B.mode === 'dungeon' && B.dgn) {
     $('#stageTxt').textContent = 'D';
     $('#stageName').textContent = DUNGEONS[B.dgn.type].name;
     $('#killTxt').textContent = Math.max(0, Math.ceil(B.dgn.left)) + '초';
+    $('#waveTxt').textContent = 'DUNGEON';
   } else {
     $('#stageTxt').textContent = state.stage;
     $('#stageName').textContent = stageName(state.stage);
-    $('#killTxt').textContent = isBossStage(state.stage) ? 'BOSS' : state.kills + '/' + KILLS_PER_STAGE;
+    const aliveQ = B.enemies.filter(e => e.dying <= 0).length + (w.spawnQ ? w.spawnQ.length : 0);
+    $('#killTxt').textContent = (B.boss && B.boss.dying <= 0) ? 'BOSS' : '적 ' + aliveQ + '마리';
+    $('#waveTxt').textContent = 'WAVE ' + Math.max(1, (w.idx || 0) + 1) + '/' + Math.max(1, (w.plan || []).length);
   }
+  const ratio = clamp(WALL.hp / Math.max(1, WALL.max), 0, 1);
+  const fill = $('#wallFill');
+  if (fill) fill.style.width = (ratio * 100) + '%';
+  const wt = $('#wallTxt');
+  if (wt) wt.textContent = Math.max(0, Math.ceil(WALL.hp)) + ' / ' + fmtFull(WALL.max);
+  const hud = $('#wallHud');
+  if (hud) hud.classList.toggle('low', ratio < 0.32);
+  const dg = $('#danger');
+  if (dg) dg.classList.toggle('on', ratio < 0.32 && B.mode === 'stage' && B.breakT <= 0);
   $('#powerTxt').textContent = fmt(st.power);
   $('#atkTxt').textContent = fmt(st.atk);
   $('#critTxt').textContent = st.crit.toFixed(1) + '%';
-  $('#cdmgTxt').textContent = st.cdmg + '%';
+  const wc = $('#wallChip');
+  if (wc) wc.textContent = fmt(st.wall);
+  const cd = $('#cdmgTxt');
+  if (cd) cd.textContent = st.cdmg + '%';
   $('#rankTxt').textContent = RANKS[state.rank];
   $('#partyLv').textContent = '파티 Lv.' + (1 + Math.floor((state.lv.atk + state.lv.hp + state.lv.crit + state.lv.cdmg) / 5));
   $('#speedBtn').textContent = state.own.pass ? (state.speed === 2 ? 'x2' : 'x1') : 'x1';
   $('#speedBtn').classList.toggle('on', state.own.pass && state.speed === 2);
   $('#muteBtn').textContent = Audio2.isMuted() ? '🔇' : '🔊';
   $('#muteBtn').classList.toggle('on', !Audio2.isMuted());
-  // combo display
   const c = $('#combo');
   if (B.combo >= 8 && B.comboT > 0) { c.classList.add('on'); c.querySelector('b').textContent = B.combo; }
   else c.classList.remove('on');
   if (B.mode === 'dungeon' && B.dgn) $('#dgnTimer').classList.add('on');
   else $('#dgnTimer').classList.remove('on');
-  // tab dots
   $$('.tab').forEach(t => {
     const k = t.dataset.tab;
     let has = false;
@@ -2036,9 +2791,26 @@ function updateHud() {
   });
 }
 
-/* ---------- party hp sync ---------- */
+/* ---------- wave banner ---------- */
+function showWaveBanner(n, total, boss) {
+  const el = $('#waveBanner');
+  if (!el) return;
+  $('#waveBannerTxt').textContent = boss ? 'BOSS WAVE' : 'WAVE ' + n + ' / ' + total;
+  $('#waveBannerSub').textContent = boss ? '보스의 습격!' : '몬스터 습격';
+  el.classList.remove('on');
+  void el.offsetWidth;
+  el.classList.add('on');
+  clearTimeout(el._t);
+  el._t = setTimeout(() => el.classList.remove('on'), 1500);
+}
+
+/* ---------- party / wall sync ---------- */
 function syncParty(initial) {
   const st = heroStats();
+  const prevMax = WALL.max;
+  WALL.max = st.wall;
+  if (initial || !prevMax) WALL.hp = WALL.max;
+  else WALL.hp = clamp(WALL.hp + (WALL.max - prevMax), 1, WALL.max);
   party.forEach(p => {
     const nmax = Math.round(st.hp * p.hpf);
     if (initial || !p.maxHp) { p.maxHp = nmax; p.hp = nmax; }
@@ -2120,6 +2892,50 @@ function renderTab() {
   updateHud();
 }
 
+function statMaxed(k) {
+  if (k === 'crit') return 5 + 0.35 * state.lv.crit >= 70;
+  if (k === 'cdmg') return 150 + 4 * state.lv.cdmg >= 500;
+  if (k === 'wallDef') return state.lv.wallDef >= WALLDEF_MAX_LV;
+  if (k === 'knock') return state.lv.knock >= KNOCK_MAX_LV;
+  return false;
+}
+function statVal(k, st) {
+  switch (k) {
+    case 'atk': return fmt(st.atk);
+    case 'hp': return fmt(st.hp);
+    case 'crit': return st.crit.toFixed(1) + '%';
+    case 'cdmg': return st.cdmg + '%';
+    case 'wall': return fmt(st.wall);
+    case 'wallDef': return st.wallDef.toFixed(1) + '%';
+    case 'knock': return 'x' + st.knock.toFixed(2);
+  }
+  return '';
+}
+function statCards(group) {
+  const st = heroStats();
+  return Object.keys(STATS).filter(k => STATS[k].grp === group).map(k => {
+    const s = STATS[k], lv = state.lv[k];
+    const cost1 = costOf(k, lv);
+    const cost10 = (() => { let c = 0; for (let i = 0; i < 10; i++) c += costOf(k, lv + i); return c; })();
+    const maxed = statMaxed(k);
+    const pct = clamp(lv / Math.max(20, lv + 6), 0, 1) * 100;
+    return '<div class="card">' +
+      '<div class="stat">' +
+      '<div class="si">' + s.icon + '</div>' +
+      '<div class="smain">' +
+      '<div class="stop"><span class="sname">' + s.name + '</span><span class="slv">Lv.' + lv + '</span><span class="sval">' + statVal(k, st) + '</span></div>' +
+      '<div class="sdesc">' + s.desc + '</div>' +
+      '<div class="sbar"><i style="width:' + pct + '%"></i></div>' +
+      '</div></div>' +
+      '<div class="buyrow">' +
+      (maxed
+        ? '<button class="buy maxed" disabled><span>MAX</span>최대치</button>'
+        : '<button class="buy ' + (state.gold >= cost1 ? 'can' : '') + '" data-buy="' + k + '" data-n="1">+1<span><span class="coin"></span>' + fmt(cost1) + '</span></button>' +
+        '<button class="buy ' + (state.gold >= cost10 ? 'can' : '') + '" data-buy="' + k + '" data-n="10">+10<span><span class="coin"></span>' + fmt(cost10) + '</span></button>' +
+        '<button class="buy ' + (state.gold >= cost1 ? 'can' : '') + '" data-buy="' + k + '" data-n="max">MAX<span>가능한 만큼</span></button>') +
+      '</div></div>';
+  }).join('');
+}
 function renderGrow() {
   const st = heroStats();
   const eq = ['weapon', 'armor', 'skill'].map(slot => {
@@ -2132,37 +2948,22 @@ function renderGrow() {
       '<div class="eg" style="color:' + GRADES[d.grade].c + '">' + GRADES[d.grade].n + '</div></div>';
   }).join('');
 
-  const rows = Object.keys(STATS).map(k => {
-    const s = STATS[k], lv = state.lv[k];
-    const cost1 = costOf(k, lv);
-    const cost10 = (() => { let c = 0; for (let i = 0; i < 10; i++) c += costOf(k, lv + i); return c; })();
-    const maxed = (k === 'crit' && 5 + 0.35 * lv >= 70) || (k === 'cdmg' && 150 + 4 * lv >= 500);
-    const val = k === 'atk' ? fmt(st.atk) : k === 'hp' ? fmt(st.hp) : k === 'crit' ? st.crit.toFixed(1) + '%' : st.cdmg + '%';
-    const pct = clamp(lv / Math.max(20, lv + 6), 0, 1) * 100;
-    return '<div class="card">' +
-      '<div class="stat">' +
-      '<div class="si">' + s.icon + '</div>' +
-      '<div class="smain">' +
-      '<div class="stop"><span class="sname">' + s.name + '</span><span class="slv">Lv.' + lv + '</span><span class="sval">' + val + '</span></div>' +
-      '<div class="sdesc">' + s.desc + '</div>' +
-      '<div class="sbar"><i style="width:' + pct + '%"></i></div>' +
-      '</div></div>' +
-      '<div class="buyrow">' +
-      (maxed
-        ? '<button class="buy maxed" disabled><span>MAX</span>최대치</button>'
-        : '<button class="buy ' + (state.gold >= cost1 ? 'can' : '') + '" data-buy="' + k + '" data-n="1">+1<span><span class="coin"></span>' + fmt(cost1) + '</span></button>' +
-        '<button class="buy ' + (state.gold >= cost10 ? 'can' : '') + '" data-buy="' + k + '" data-n="10">+10<span><span class="coin"></span>' + fmt(cost10) + '</span></button>' +
-        '<button class="buy ' + (state.gold >= cost1 ? 'can' : '') + '" data-buy="' + k + '" data-n="max">MAX<span>가능한 만큼</span></button>') +
-      '</div></div>';
-  }).join('');
-
+  const wallPct = clamp(WALL.hp / Math.max(1, WALL.max), 0, 1) * 100;
   return '<div class="sec-h"><span class="si">🛡️</span><h3>파티 장비</h3><span class="n">중복 획득 시 자동 강화</span></div>' +
     '<div class="equip">' + eq + '</div>' +
-    '<div class="sec-h"><span class="si">📈</span><h3>성장</h3><span class="n">골드 ' + fmt(state.gold) + '</span></div>' +
-    rows +
+    '<div class="sec-h"><span class="si">🏰</span><h3>성벽 방어선</h3><span class="n">내구도 ' + Math.max(0, Math.ceil(WALL.hp)) + ' / ' + fmtFull(WALL.max) + '</span></div>' +
+    '<div class="card wallcard">' +
+    '<div class="wc-top"><span class="wc-ico">🏰</span><div class="wc-main"><div class="wc-t">성벽 내구도</div>' +
+    '<div class="wc-s">몬스터가 성벽을 때릴 때마다 깎입니다. 성벽이 무너지면 전열이 붕괴되고 해당 스테이지에 재도전합니다.</div></div>' +
+    '<div class="wc-val">' + Math.round(wallPct) + '%</div></div>' +
+    '<div class="wc-bar"><i style="width:' + wallPct + '%"></i></div>' +
+    '</div>' +
+    statCards('wall') +
+    '<div class="sec-h"><span class="si">📈</span><h3>파티 성장</h3><span class="n">골드 ' + fmt(state.gold) + '</span></div>' +
+    statCards('party') +
     '<div class="card" style="background:linear-gradient(160deg,#1a1526,#0d0f1a);border-color:#3a3050">' +
-    '<div style="font-size:10px;color:#b8a9d8;line-height:1.55">💡 <b style="color:#ffd98a">TIP</b> — 같은 장비를 뽑으면 +1 강화됩니다. 최대 +4까지. ' +
-    '미션 보상 다이아로 11연차를 돌려 전설 장비를 노려보세요.</div></div>';
+    '<div style="font-size:10px;color:#b8a9d8;line-height:1.55">💡 <b style="color:#ffd98a">TIP</b> — 몬스터가 성벽 앞에 몰릴 때 기사의 <b style="color:#bfe0ff">넉백</b>과 마법사의 <b style="color:#ffbf8a">광역 폭발</b>이 진가를 발휘합니다. ' +
+    '성직자의 힐은 파티와 성벽을 함께 회복합니다.</div></div>';
 }
 
 function renderGacha() {
@@ -2278,10 +3079,9 @@ function openItem(uid) {
 /* ---------- growth ---------- */
 function buyStat(key, n) {
   let bought = 0;
-  const lim = key === 'crit' ? () => 5 + 0.35 * state.lv.crit < 70 : key === 'cdmg' ? () => 150 + 4 * state.lv.cdmg < 500 : () => true;
-  const target = n === 'max' ? 300 : parseInt(n, 10);
+  const target = n === 'max' ? 400 : parseInt(n, 10);
   for (let i = 0; i < target; i++) {
-    if (!lim()) break;
+    if (statMaxed(key)) break;
     const c = costOf(key, state.lv[key]);
     if (state.gold < c) break;
     state.gold -= c; state.lv[key]++; bought++;
@@ -2480,17 +3280,19 @@ function applyProduct(p) {
 function openHelp() {
   openModal({
     title: '아르카디아 기사단 키우기 II',
-    sub: '4인 파티가 자동으로 싸우는 방치형 RPG',
+    sub: '성벽을 지켜내는 4인 파티 디펜스 RPG',
     body:
       '<ul class="help-list">' +
-      '<li><b>⚔️</b>기사·궁수·대마법사·성직자 4인 파티가 실시간으로 전투합니다.</li>' +
-      '<li><b>💥</b>치명타가 터지면 화면이 멈추고 다단히트 데미지가 쏟아집니다.</li>' +
-      '<li><b>📜</b>화면 아래 미션 바에서 보상을 받으면 다음 미션이 이어집니다.</li>' +
+      '<li><b>🏰</b>왼쪽 성벽에 기사·궁수·대마법사·성직자가 진을 치고, 오른쪽에서 몬스터 떼가 쏟아져 나옵니다.</li>' +
+      '<li><b>👥</b>몬스터가 성벽에 닿으면 성벽 내구도가 깎입니다. 30% 아래로 떨어지면 붉은 경고와 균열이 번집니다.</li>' +
+      '<li><b>💨</b>기사의 <b>방패 밀치기</b>가 몽치를 한꾸번에 밀어내고, 궁수의 화살비와 마법사의 폭발이 떤을 목동시에 쏘러냅니다.</li>' +
+      '<li><b>⚡</b>버티기 실패해도 자동으로 해당 스테이지 처음부터 재도전합니다.</li>' +
+      '<li><b>🏰</b>성장 탭에서 성벽 내구도·방어·넑백을 업그레이드하세요.</li>' +
       '<li><b>🎁</b>뽑기로 장비를 모으고, 같은 장비는 자동 강화(+4)됩니다.</li>' +
       '<li><b>🏅</b>던전 3종으로 골드·다이아·계급을 올리세요. 매일 3회 충전.</li>' +
       '<li><b>💾</b>자동 저장되며, 접속이 끊긴 동안에도 보상이 쌓입니다.</li>' +
       '</ul>',
-    buttons: [{ label: '모험 시작', primary: true }]
+    buttons: [{ label: '방어선 점검', primary: true }]
   });
 }
 
@@ -2509,9 +3311,8 @@ function checkDaily() {
 }
 function offlineReward(sec) {
   const st = heroStats();
-  const killTime = Math.max(1.6, enemyHp(state.stage) / Math.max(1, st.dps));
-  const rate = goldPerKill(state.stage) * KILLS_PER_STAGE / Math.max(1, killTime * KILLS_PER_STAGE);
-  let gold = Math.floor(rate * sec * 0.62);
+  const killTime = Math.max(1.2, enemyHp(state.stage) / Math.max(1, st.dps));
+  let gold = Math.floor(goldPerKill(state.stage) / killTime * sec * 0.55);
   if (state.own.monthly) gold = Math.floor(gold * 1.2);
   gold = Math.max(gold, Math.floor(12 * sec / 60));
   const dia = state.own.monthly ? Math.floor(sec / 3600 * 12) : Math.floor(sec / 3600 * 4);
@@ -2627,15 +3428,15 @@ function boot() {
   updateHud();
   updateMission(true);
   renderTab();
-  spawnStageEnemy();
+  startStage(state.stage, true);
   requestAnimationFrame(ts => { lastT = ts; requestAnimationFrame(frame); });
   if (had) checkOffline();
-  else setTimeout(() => { toast('아르카디아 기사단에 오신 것을 환영합니다!'); openHelp(); }, 700);
+  else setTimeout(() => { toast('성벽 방어선에 오신 것을 환영합니다!'); openHelp(); }, 700);
   setInterval(() => { checkDaily(); updateHud(); }, 30000);
   if (document.fonts && document.fonts.ready) document.fonts.ready.then(() => { });
 }
 
-window.__ARC2 = { state: () => state, B, party, stats: heroStats, addNum, spawnStageEnemy };
+window.__ARC2 = { state: () => state, B, party, WALL, stats: heroStats, addNum, startStage, castUltimate, shieldBash };
 
 if (document.readyState === 'loading') document.addEventListener('DOMContentLoaded', boot);
 else boot();
