@@ -761,7 +761,7 @@ function heroStats() {
   const w = equipped('weapon'), a = equipped('armor'), sk = equipped('skill');
   const rankMult = 1 + state.rank * 0.12;
   const atk = 12 * Math.pow(1.08, state.lv.atk) * (1 + itemStat(w) / 100) * rankMult;
-  const hp = 130 * Math.pow(1.08, state.lv.hp) * (1 + itemStat(a) / 100) * rankMult;
+  const hp = 210 * Math.pow(1.08, state.lv.hp) * (1 + itemStat(a) / 100) * rankMult;
   const crit = Math.min(70, 5 + 0.35 * state.lv.crit);
   const cdmg = Math.min(500, 150 + 4 * state.lv.cdmg);
   const skill = sk ? { name: itemDef(sk).name, mult: itemStat(sk) / 100 } : { name: '강타', mult: 1.0 };
@@ -786,7 +786,7 @@ const stageName = st => {
   return '심연의 옥좌';
 };
 const enemyHp = st => 95 * Math.pow(1.18, st - 1);
-const enemyAtk = st => 6 * Math.pow(1.15, st - 1);
+const enemyAtk = st => 5.4 * Math.pow(1.14, st - 1);
 const goldPerKill = st => 6 * Math.pow(1.165, st - 1);
 const KILLS_PER_STAGE = 7;
 const isBossStage = st => st % 10 === 0;
@@ -1422,6 +1422,13 @@ function updateBattle(dt) {
     if (h.life <= 0) B.hits.splice(i, 1);
   }
 
+  // out-of-combat regeneration
+  if (!B.enemy) {
+    party.forEach(p => {
+      if (!p.down && p.hp < p.maxHp) p.hp = Math.min(p.maxHp, p.hp + p.maxHp * 0.03 * dt);
+    });
+  }
+
   // party wipe handling
   if (party.every(p => p.down > 0) && B.wipeT <= 0) {
     B.wipeT = 3.2;
@@ -1440,7 +1447,8 @@ function updateBattle(dt) {
 function enemyStrike(e) {
   const alive = party.filter(p => !p.down);
   if (!alive.length) return;
-  const target = alive[Math.floor(Math.random() * Math.min(2, alive.length))];
+  const tank = alive.find(p => p.key === 'knight');
+  const target = (tank && Math.random() < 0.45) ? tank : pick(alive);
   e.anim = 1;
   const dmg = Math.round(e.atk * rnd(0.85, 1.15));
   at(0.16, () => {
@@ -1452,8 +1460,8 @@ function enemyStrike(e) {
     B.shake = Math.max(B.shake, e.boss ? 7 : 3.4);
     Audio2.play('hit');
     if (target.hp <= 0) {
-      target.hp = 0; target.down = 7;
-      toast(target.name + ' 쓰러짐! 7초 후 부활합니다');
+      target.hp = 0; target.down = 5;
+      toast(target.name + ' 쓰러짐! 5초 후 부활합니다');
     }
   });
 }
