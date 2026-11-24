@@ -1081,7 +1081,7 @@ function resize() {
   const compact = H < 470;
   groundY = H * (compact ? 0.775 : 0.80);
   heroH = clamp(Math.min(H * (compact ? 0.20 : 0.185), W * 0.16), 44, 168);
-  WALL.x = clamp(W * 0.26, 76, 380);
+  WALL.x = clamp(W * (W < 560 ? 0.32 : 0.26), 76, 380);
   WALL.h = clamp(heroH * 1.38, 66, 232);
   WALL.top = groundY - WALL.h;
   WALL.backTop = WALL.top - heroH * 0.34;
