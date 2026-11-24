@@ -801,7 +801,8 @@ function bossSprite(st) {
   const ch = Math.floor(st / 10);
   return ['mob_slime', 'mob_orc', 'mob_darkknight', 'mob_dragon'][(ch - 1) % 4] || 'mob_dragon';
 }
-const MOB_NAME = { mob_slime: '킹 슬라임', mob_orc: '오크 전사', mob_darkknight: '다크나이트', mob_dragon: '레드 드래곤' };
+const MOB_NAME = { mob_slime: '슬라임', mob_orc: '오크 전사', mob_darkknight: '다크나이트', mob_dragon: '레드 드래곤' };
+const BOSS_NAME = { mob_slime: '킹 슬라임', mob_orc: '오크 대장', mob_darkknight: '다크나이트 로드', mob_dragon: '레드 드래곤' };
 
 /* ---------- missions ---------- */
 function missionAt(i) {
@@ -984,7 +985,7 @@ function makeEnemy(opt) {
   const spr = opt.spr || (boss ? bossSprite(st) : mobTier(st));
   const hp = opt.hp || (boss ? enemyHp(st) * 14 : enemyHp(st));
   return {
-    spr, boss, name: opt.name || (boss ? '보스 · ' + MOB_NAME[spr] : MOB_NAME[spr] || '몬스터'),
+    spr, boss, name: opt.name || (boss ? '보스 · ' + (BOSS_NAME[spr] || '군주') : MOB_NAME[spr] || '몬스터'),
     hp, maxHp: hp, atk: opt.atk || (boss ? enemyAtk(st) * 1.55 : enemyAtk(st)),
     scale: opt.scale || (boss ? 1.62 : 1),
     x: enemyBaseX() + (boss ? 0 : rnd(-16, 16)), y: groundY,
@@ -1227,9 +1228,9 @@ function startDungeon(type) {
 function spawnDgnEnemy() {
   if (B.mode !== 'dungeon' || !B.dgn) return;
   if (B.dgn.type === 'gold') {
-    B.enemy = makeEnemy({ spr: 'mob_slime', isDgn: true, gold: Math.round(goldPerKill(state.stage) * 7), scale: 0.85, hp: enemyHp(state.stage) * 0.55, name: '황금 슬라임', tint: 'gold' });
+    B.enemy = makeEnemy({ spr: 'mob_slime', isDgn: true, gold: Math.round(goldPerKill(state.stage) * 8), scale: 0.9, hp: enemyHp(state.stage) * 1.15, name: '황금 슬라임', tint: 'gold' });
   } else if (B.dgn.type === 'dia') {
-    B.enemy = makeEnemy({ spr: 'mob_slime', isDgn: true, dia: 2 + Math.floor(state.stage / 8), scale: 0.85, hp: enemyHp(state.stage) * 0.62, name: '수정 골렘', tint: 'crystal' });
+    B.enemy = makeEnemy({ spr: 'mob_slime', isDgn: true, dia: 2 + Math.floor(state.stage / 8), scale: 0.9, hp: enemyHp(state.stage) * 1.3, name: '수정 골렘', tint: 'crystal' });
   }
 }
 function dgnKill(e) {
@@ -1241,14 +1242,14 @@ function dgnKill(e) {
     state.gold += g; state.stats.gold += g;
     addNum(e.x, e.y - 60, g, 'gold');
     Audio2.play('coin');
-    B.spawnT = 0.18;
+    B.spawnT = 0.3;
   } else if (B.dgn.type === 'dia') {
     const d = e.dia || 2;
     B.dgn.dia += d;
     state.dia += d;
     addNum(e.x, e.y - 60, d, 'dia');
     Audio2.play('coin');
-    B.spawnT = 0.22;
+    B.spawnT = 0.32;
   } else if (B.dgn.type === 'promote') {
     endDungeon(true);
   }
@@ -1972,9 +1973,15 @@ function updateHud() {
   const st = heroStats();
   $('#goldTxt').textContent = fmt(state.gold);
   $('#diaTxt').textContent = fmt(state.dia);
-  $('#stageTxt').textContent = state.stage;
-  $('#stageName').textContent = stageName(state.stage);
-  $('#killTxt').textContent = isBossStage(state.stage) ? 'BOSS' : state.kills + '/' + KILLS_PER_STAGE;
+  if (B.mode === 'dungeon' && B.dgn) {
+    $('#stageTxt').textContent = 'D';
+    $('#stageName').textContent = DUNGEONS[B.dgn.type].name;
+    $('#killTxt').textContent = Math.max(0, Math.ceil(B.dgn.left)) + '초';
+  } else {
+    $('#stageTxt').textContent = state.stage;
+    $('#stageName').textContent = stageName(state.stage);
+    $('#killTxt').textContent = isBossStage(state.stage) ? 'BOSS' : state.kills + '/' + KILLS_PER_STAGE;
+  }
   $('#powerTxt').textContent = fmt(st.power);
   $('#atkTxt').textContent = fmt(st.atk);
   $('#critTxt').textContent = st.crit.toFixed(1) + '%';
