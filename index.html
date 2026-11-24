@@ -785,9 +785,9 @@ const stageName = st => {
   if (st <= 34) return '마왕성 회랑';
   return '심연의 옥좌';
 };
-const enemyHp = st => 170 * Math.pow(1.19, st - 1);
-const enemyAtk = st => 5.5 * Math.pow(1.155, st - 1);
-const goldPerKill = st => 5 * Math.pow(1.16, st - 1);
+const enemyHp = st => 95 * Math.pow(1.18, st - 1);
+const enemyAtk = st => 6 * Math.pow(1.15, st - 1);
+const goldPerKill = st => 6 * Math.pow(1.165, st - 1);
 const KILLS_PER_STAGE = 7;
 const isBossStage = st => st % 10 === 0;
 
@@ -983,7 +983,7 @@ function makeEnemy(opt) {
   const st = state.stage;
   const boss = !!opt.boss;
   const spr = opt.spr || (boss ? bossSprite(st) : mobTier(st));
-  const hp = opt.hp || (boss ? enemyHp(st) * 14 : enemyHp(st));
+  const hp = opt.hp || (boss ? enemyHp(st) * 11 : enemyHp(st));
   return {
     spr, boss, name: opt.name || (boss ? '보스 · ' + (BOSS_NAME[spr] || '군주') : MOB_NAME[spr] || '몬스터'),
     hp, maxHp: hp, atk: opt.atk || (boss ? enemyAtk(st) * 1.55 : enemyAtk(st)),
@@ -1380,7 +1380,7 @@ function updateBattle(dt) {
     if (pr && !pr.down) {
       party.forEach(q => {
         if (!q.down && q.hp < q.maxHp) {
-          const heal = Math.round(q.maxHp * 0.07);
+          const heal = Math.round(q.maxHp * 0.10);
           q.hp = Math.min(q.maxHp, q.hp + heal);
           if (Math.random() < 0.5) addNum(q.x, q.y - heroH * 0.9, heal, 'heal');
         }
@@ -1453,7 +1453,7 @@ function enemyStrike(e) {
     Audio2.play('hit');
     if (target.hp <= 0) {
       target.hp = 0; target.down = 7;
-      toast(target.name + '이(가) 쓰러졌습니다!');
+      toast(target.name + ' 쓰러짐! 7초 후 부활합니다');
     }
   });
 }
