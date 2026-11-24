@@ -1414,7 +1414,7 @@ function enemyHitWall(e) {
   at(0.14, () => {
     if (e.dying > 0) return;
     const def = Math.min(70, wallDefPct());
-    const base = (2.0 + state.stage * 0.52) * (e.boss ? 2.0 : 1) * BAL.dmg;
+    const base = (2.6 + state.stage * 0.60) * (e.boss ? 2.0 : 1) * BAL.dmg;
     let dmg = base * rnd(0.9, 1.15) * (1 - def / 100);
     dmg = Math.max(1, Math.round(dmg));
     if (B.mode === 'dungeon') dmg = Math.round(dmg * 0.55);
@@ -1614,6 +1614,8 @@ function healPulse(big) {
 }
 function castSignature(p) {
   const st = heroStats();
+  p.anim = 1;
+  p.animDur = 0.5;
   if (p.key === 'knight') {
     if (aliveEnemies().filter(e => e.x < WALL.x + 300).length >= 2) shieldBash(false);
   } else if (p.key === 'archer') {
@@ -2338,19 +2340,20 @@ function drawEnemies() {
     } else if (e.state === 'walk') {
       const ph = e.t * 3.6 + e.hop;
       const bounce = Math.abs(Math.sin(ph));
-      hop = bounce * h * 0.075;
+      hop = bounce * h * 0.115;
       const land = Math.max(0, 1 - bounce * 2.4);
       sy = 1 + 0.055 * Math.sin(ph * 2) - 0.05 * land;
       sx = 1 - 0.045 * Math.sin(ph * 2) + 0.05 * land;
       tilt = Math.sin(ph) * 0.055 + 0.03;
       dx = -Math.sin(ph) * 1.5;
     } else if (e.state === 'attack') {
-      const wind = clamp((e.atkT - 1.1) / 0.35, 0, 1);
+      const wu = clamp((0.32 - e.atkT) / 0.32, 0, 1);
       const hit = e.anim;
-      hop = Math.abs(Math.sin(e.t * 2.2 + e.hop)) * h * 0.02;
-      tilt = -0.06 * wind + 0.20 * Math.sin(hit * Math.PI);
-      dx = -4 * wind + 12 * Math.sin(hit * Math.PI);
-      sy = 1 + 0.03 * Math.sin(hit * Math.PI);
+      hop = Math.abs(Math.sin(e.t * 2.2 + e.hop)) * h * 0.025;
+      tilt = -0.13 * wu + 0.24 * Math.sin(hit * Math.PI);
+      dx = -7 * wu + 15 * Math.sin(hit * Math.PI);
+      sy = 1 + 0.04 * Math.sin(hit * Math.PI) - 0.03 * wu;
+      sx = 1 - 0.03 * Math.sin(hit * Math.PI) + 0.02 * wu;
     }
     if (e.hurt > 0) {
       const k = clamp(e.hurt / 0.2, 0, 1);
