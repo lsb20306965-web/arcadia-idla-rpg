@@ -2867,6 +2867,12 @@ function updateHud() {
   if (wt) wt.textContent = Math.max(0, Math.ceil(WALL.hp)) + ' / ' + fmtFull(WALL.max);
   const hud = $('#wallHud');
   if (hud) hud.classList.toggle('low', ratio < 0.32);
+  const wcv = document.querySelector('.wallcard .wc-val');
+  if (wcv) wcv.textContent = Math.round(ratio * 100) + '%';
+  const wcb = document.querySelector('.wallcard .wc-bar > i');
+  if (wcb) wcb.style.width = (ratio * 100) + '%';
+  const wcn = $('#wallSecN');
+  if (wcn) wcn.textContent = '내구도 ' + Math.max(0, Math.ceil(WALL.hp)) + ' / ' + fmtFull(WALL.max);
   const dg = $('#danger');
   if (dg) dg.classList.toggle('on', ratio < 0.32 && B.mode === 'stage' && B.breakT <= 0);
   $('#powerTxt').textContent = fmt(st.power);
@@ -3057,7 +3063,7 @@ function renderGrow() {
   const wallPct = clamp(WALL.hp / Math.max(1, WALL.max), 0, 1) * 100;
   return '<div class="sec-h"><span class="si">🛡️</span><h3>파티 장비</h3><span class="n">중복 획득 시 자동 강화</span></div>' +
     '<div class="equip">' + eq + '</div>' +
-    '<div class="sec-h"><span class="si">🏰</span><h3>성벽 방어선</h3><span class="n">내구도 ' + Math.max(0, Math.ceil(WALL.hp)) + ' / ' + fmtFull(WALL.max) + '</span></div>' +
+    '<div class="sec-h"><span class="si">🏰</span><h3>성벽 방어선</h3><span class="n" id="wallSecN">내구도 ' + Math.max(0, Math.ceil(WALL.hp)) + ' / ' + fmtFull(WALL.max) + '</span></div>' +
     '<div class="card wallcard">' +
     '<div class="wc-top"><span class="wc-ico">🏰</span><div class="wc-main"><div class="wc-t">성벽 내구도</div>' +
     '<div class="wc-s">몬스터가 성벽을 때릴 때마다 깎입니다. 성벽이 무너지면 전열이 붕괴되고 해당 스테이지에 재도전합니다.</div></div>' +
