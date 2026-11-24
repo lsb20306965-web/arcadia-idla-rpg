@@ -888,7 +888,7 @@ const enemyHp = st => 92 * Math.pow(1.175, st - 1);
 const enemyAtk = st => 5.0 * Math.pow(1.135, st - 1);
 const goldPerKill = st => 3.1 * Math.pow(1.155, st - 1);
 /* 밸런스 다이얼 (튜닝용) */
-const BAL = { hp: 1.55, dmg: 1.30, count: 1.0, spd: 1.0 };
+const BAL = { hp: 1.55, dmg: 1.50, count: 1.0, spd: 1.0 };
 const KILLS_PER_STAGE = 7;
 const isBossStage = st => st % 10 === 0;
 /* 웨이브 편성: 3웨이브, 보스 스테이지는 마지막 웨이브에 보스+호위 */
@@ -922,7 +922,7 @@ function bossSprite(st) {
   return ['mob_slime', 'mob_orc', 'mob_darkknight', 'mob_dragon'][(ch - 1) % 4] || 'mob_dragon';
 }
 const MOB_NAME = { mob_slime: '슬라임', mob_orc: '오크 전사', mob_darkknight: '다크나이트', mob_dragon: '레드 드래곤' };
-const MOB_SPD = { mob_slime: 112, mob_orc: 128, mob_darkknight: 142, mob_dragon: 150 };
+const MOB_SPD = { mob_slime: 148, mob_orc: 162, mob_darkknight: 176, mob_dragon: 186 };
 const BOSS_NAME = { mob_slime: '킹 슬라임', mob_orc: '오크 대장', mob_darkknight: '다크나이트 로드', mob_dragon: '레드 드래곤' };
 
 /* ---------- missions ---------- */
@@ -1276,7 +1276,7 @@ function updateWave(dt) {
   }
   if ((w.state === 'spawn' || w.state === 'fight') && !w.spawnQ.length && !B.enemies.length) {
     w.state = 'rest'; w.timer = w.idx + 1 >= w.total ? 0.9 : 1.5;
-    WALL.hp = Math.min(WALL.max, WALL.hp + WALL.max * 0.05);
+    WALL.hp = Math.min(WALL.max, WALL.hp + WALL.max * 0.04);
     if (w.idx + 1 < w.total) sfx('clear', 0.4);
     updateHud();
   }
@@ -1286,7 +1286,7 @@ function advanceStage() {
   state.best = Math.max(state.best, state.stage);
   B.stageFlash = 0.6;
   B.bgKick = 1;
-  WALL.hp = Math.min(WALL.max, WALL.hp + WALL.max * 0.22);
+  WALL.hp = Math.min(WALL.max, WALL.hp + WALL.max * 0.18);
   party.forEach(p => { if (!p.down) p.hp = Math.min(p.maxHp, p.hp + p.maxHp * 0.45); });
   showStageClear(state.stage);
   Audio2.play('clear');
@@ -1588,7 +1588,7 @@ function healPulse(big) {
     }
     q.healGlow = big ? 1 : 0.55;
   });
-  const wr = Math.round(WALL.max * (big ? 0.10 : 0.03));
+  const wr = Math.round(WALL.max * (big ? 0.05 : 0.012));
   if (WALL.hp < WALL.max) {
     WALL.hp = Math.min(WALL.max, WALL.hp + wr);
     addNum(WALL.x * 0.55, WALL.top - 12, wr, 'heal');
@@ -1919,7 +1919,7 @@ function updateEnemies(dt) {
     } else if (e.state === 'attack') {
       e.atkT -= dt;
       if (e.atkT <= 0) {
-        e.atkT = rnd(1.5, 2.2) * (e.boss ? 1.35 : 1);
+        e.atkT = rnd(1.25, 1.75) * (e.boss ? 1.3 : 1);
         e.anim = 1;
         enemyHitWall(e);
       }
