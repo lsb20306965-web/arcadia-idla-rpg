@@ -1079,7 +1079,7 @@ function resize() {
   const compact = H < 470;
   groundY = H * (compact ? 0.775 : 0.80);
   heroH = clamp(Math.min(H * (compact ? 0.20 : 0.185), W * 0.16), 44, 168);
-  WALL.x = clamp(W * 0.245, 62, 330);
+  WALL.x = clamp(W * 0.26, 76, 380);
   WALL.h = clamp(heroH * 1.38, 66, 232);
   WALL.top = groundY - WALL.h;
   WALL.backTop = WALL.top - heroH * 0.34;
@@ -1088,10 +1088,10 @@ function resize() {
 }
 /* 성벽 위 대형: 앞줄(기사·궁수) / 뒷줄(마법사·성직자) */
 const FORMATION = [
-  { fx: 0.80, fy: 1.00, s: 1.00 },
-  { fx: 0.29, fy: 1.03, s: 0.96 },
-  { fx: 0.52, fy: 0.60, s: 0.88 },
-  { fx: 0.12, fy: 0.58, s: 0.88 }
+  { fx: 0.90, fy: 1.00, s: 1.00 },
+  { fx: 0.66, fy: 1.03, s: 0.95 },
+  { fx: 0.55, fy: 0.62, s: 0.86 },
+  { fx: 0.30, fy: 0.60, s: 0.86 }
 ];
 function layoutParty() {
   party.forEach((p, i) => {
@@ -1178,6 +1178,7 @@ function makeEnemy(opt) {
     scale: (opt.scale || 1) * (0.86 + 0.18 * depth),
     depth,
     rank: opt.rank === undefined ? Math.floor(Math.random() * 4) : opt.rank,
+    jit: rnd(-8, 12),
     x: opt.x || (W * rnd(0.94, 1.10) + 20),
     y: 0,
     spd: (opt.spd || MOB_SPD[spr] || 70) * rnd(0.9, 1.12) * (boss ? 0.72 : 1),
@@ -1196,7 +1197,7 @@ function makeEnemy(opt) {
   return e;
 }
 function setStop(e) {
-  e.stopX = WALL.x + 34 + e.rank * 20 + e.depth * 16;
+  e.stopX = WALL.x + 30 + e.rank * 46 + e.depth * 20 + e.jit;
 }
 
 function spawnOne(desc) {
@@ -1903,7 +1904,7 @@ function updateEnemies(dt) {
       if (e.dying <= 0) list.splice(i, 1);
       continue;
     }
-    e.stopX = WALL.x + 34 + e.rank * 20 + e.depth * 16;
+    e.stopX = WALL.x + 30 + e.rank * 46 + e.depth * 20 + e.jit;
     if (e.kb > 0) {
       e.kbT += dt;
       e.x += e.kb * dt;
@@ -2059,6 +2060,44 @@ function drawWall() {
   }
   ctx.restore();
 
+  // ---- 좌측 탑 ----
+  const tw = Math.min(x1 * 0.40, 118);
+  const ttop = WALL.top - heroH * 0.55;
+  const tg = ctx.createLinearGradient(0, ttop, 0, WALL.top);
+  tg.addColorStop(0, '#68758f');
+  tg.addColorStop(1, '#3c4760');
+  ctx.fillStyle = tg;
+  ctx.fillRect(-12, ttop, tw + 12, WALL.top - ttop + 8);
+  const tbh = Math.max(12, WALL.h * 0.09), ttw = Math.max(16, tw * 0.34);
+  for (let r = 0; r * tbh < WALL.top - ttop; r++) {
+    const off = (r % 2) ? -ttw * 0.5 : 0;
+    for (let c = -1; c * ttw + off < tw + 12; c++) {
+      const bx = -12 + c * ttw + off, by = ttop + r * tbh;
+      if (by > WALL.top) break;
+      const hs = hash2(r + 11, c + 3);
+      ctx.fillStyle = 'rgba(' + ((76 + hs * 40) | 0) + ',' + ((90 + hs * 40) | 0) + ',' + ((116 + hs * 44) | 0) + ',0.95)';
+      ctx.fillRect(bx + 1, by + 1, ttw - 2, tbh - 2);
+      ctx.fillStyle = 'rgba(205,225,255,' + (0.04 + hs * 0.06) + ')';
+      ctx.fillRect(bx + 1, by + 1, ttw - 2, 1.4);
+    }
+  }
+  const mw3 = tw / 4;
+  for (let i = 0; i < 4; i++) {
+    ctx.fillStyle = '#5a6883';
+    ctx.fillRect(-12 + i * (mw3 + 2), ttop - mw3 * 0.42, mw3, mw3 * 0.46);
+    ctx.fillStyle = 'rgba(190,215,250,.18)';
+    ctx.fillRect(-12 + i * (mw3 + 2), ttop - mw3 * 0.42, mw3, 1.6);
+  }
+  // 탑의 창문・횃불
+  const winY = ttop + (WALL.top - ttop) * 0.34;
+  ctx.fillStyle = 'rgba(10,14,22,.9)';
+  ctx.fillRect(tw * 0.34, winY, tw * 0.16, tw * 0.26);
+  const wg2 = ctx.createRadialGradient(tw * 0.42, winY + tw * 0.13, 1, tw * 0.42, winY + tw * 0.13, tw * 0.34);
+  wg2.addColorStop(0, 'rgba(255,190,110,.55)');
+  wg2.addColorStop(1, 'rgba(255,140,40,0)');
+  ctx.fillStyle = wg2;
+  ctx.beginPath(); ctx.arc(tw * 0.42, winY + tw * 0.13, tw * 0.34, 0, 6.283); ctx.fill();
+
   // ---- 성벽 위 통로(뒷면) ----
   const walk = ctx.createLinearGradient(0, WALL.backTop, 0, WALL.top);
   walk.addColorStop(0, 'rgba(96,112,140,.95)');
@@ -2133,8 +2172,8 @@ function drawWall() {
   // ---- 피격 붉은 경고 ----
   if (WALL.glow > 0.01) {
     const wg = ctx.createLinearGradient(0, WALL.top, 0, bot);
-    wg.addColorStop(0, 'rgba(255,60,70,' + (0.30 * WALL.glow) + ')');
-    wg.addColorStop(1, 'rgba(255,30,50,' + (0.12 * WALL.glow) + ')');
+    wg.addColorStop(0, 'rgba(255,60,70,' + (0.15 * WALL.glow) + ')');
+    wg.addColorStop(1, 'rgba(255,30,50,' + (0.05 * WALL.glow) + ')');
     ctx.fillStyle = wg;
     ctx.fillRect(-12, WALL.top, x1 + 12, bot - WALL.top);
     ctx.strokeStyle = 'rgba(255,120,120,' + (0.55 * WALL.glow) + ')';
