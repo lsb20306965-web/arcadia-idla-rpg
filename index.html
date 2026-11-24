@@ -941,12 +941,12 @@ function resize() {
   cv.height = Math.round(H * DPR);
   ctx.setTransform(DPR, 0, 0, DPR, 0, 0);
   groundY = H * 0.855;
-  heroH = clamp(H * 0.185, 62, 172);
+  heroH = clamp(H * 0.175, 60, 168);
   layoutParty();
 }
 function heroX(i) {
-  const step = Math.min(W * 0.082, 118);
-  return W * 0.155 + step * i;
+  const step = Math.min(W * 0.088, 126);
+  return W * 0.148 + step * i;
 }
 function layoutParty() {
   party.forEach((p, i) => { p.x = heroX(i); p.y = groundY; p.baseY = groundY; });
