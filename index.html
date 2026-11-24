@@ -946,12 +946,12 @@ function resize() {
 }
 function heroX(i) {
   const step = Math.min(W * 0.088, 126);
-  return W * 0.148 + step * i;
+  return W * 0.175 + step * i;
 }
 function layoutParty() {
   party.forEach((p, i) => { p.x = heroX(i); p.y = groundY; p.baseY = groundY; });
 }
-function enemyBaseX() { return W * (W < 620 ? 0.735 : 0.735); }
+function enemyBaseX() { return W * (W < 620 ? 0.70 : 0.695); }
 
 /* ---------- floating numbers / fx ---------- */
 function addNum(x, y, val, kind) {
@@ -1017,7 +1017,7 @@ function hitEnemy(dmg, opt) {
   const crit = !!opt.crit;
   const real = Math.max(1, Math.round(dmg));
   e.hp -= real;
-  e.hurt = 0.14;
+  e.hurt = crit ? 0.09 : 0.045;
   B.combo++; B.comboT = 1.35;
   addNum(e.x + rnd(-6, 6), e.y - spriteH(e) * 0.62, real, crit ? 'crit' : 'dmg');
   if (crit) {
@@ -1476,7 +1476,7 @@ function drawSprite(key, x, yBase, h, opt) {
   }
   const w = img.width / img.height * h;
   ctx.save();
-  if (opt.flash) ctx.filter = 'brightness(2.6) saturate(.35)';
+  if (opt.flash) ctx.filter = 'brightness(1.85) saturate(.55)';
   else if (opt.tint === 'gold') ctx.filter = 'sepia(1) saturate(3.4) hue-rotate(-12deg) brightness(1.12)';
   else if (opt.tint === 'crystal') ctx.filter = 'hue-rotate(150deg) saturate(1.7) brightness(1.15)';
   else if (opt.gray) ctx.filter = 'grayscale(.85) brightness(.8)';
